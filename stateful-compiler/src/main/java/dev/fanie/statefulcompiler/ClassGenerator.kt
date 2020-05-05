@@ -15,6 +15,9 @@ class ClassGenerator(private val generationDirectory: File) {
         }
     }
 
+    fun generate(classBuilder: ClassBuilder) =
+        generate(classBuilder.classPackage, classBuilder.className, classBuilder.classSource)
+
     private fun getRelativePath(classPackage: String) = classPackage.replace(".", "/")
 
     private fun getFileName(className: String) = "$className.kt"

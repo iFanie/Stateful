@@ -37,19 +37,11 @@ class StatefulCompiler : AbstractProcessor() {
 
                 val updateListenerBuilder =
                     UpdateListenerBuilder(statefulPackage, statefulClass, statefulGetters)
-                classGenerator.generate(
-                    updateListenerBuilder.packageName,
-                    updateListenerBuilder.className,
-                    updateListenerBuilder.sourceCode
-                )
+                classGenerator.generate(updateListenerBuilder)
 
                 val statefulBuilder =
                     StatefulBuilder(statefulPackage, statefulClass, statefulGetters)
-                classGenerator.generate(
-                    statefulBuilder.packageName,
-                    statefulBuilder.className,
-                    statefulBuilder.sourceCode
-                )
+                classGenerator.generate(statefulBuilder)
             }
     }
 }
