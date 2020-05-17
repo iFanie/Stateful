@@ -6,13 +6,14 @@ class StatefulBuilder(
     statefulPackage: String,
     private val statefulClass: String,
     private val statefulGetters: List<ExecutableElement>
-) {
+) : ClassBuilder {
     private val statefulName = statefulClass.replace("$statefulPackage.", "").capitalize()
     private val updateListenerName = "${statefulName.decapitalize()}UpdateListener"
-    val packageName = "$statefulPackage.stateful"
-    val className = "Stateful$statefulName"
-    val sourceCode
-        get() = """     |package $packageName
+
+    override val classPackage = "$statefulPackage.stateful"
+    override val className = "Stateful$statefulName"
+    override val classSource
+        get() = """     |package $classPackage
                         |
                         |class $className(
                         |    private val $updateListenerName: ${statefulName}UpdateListener,
