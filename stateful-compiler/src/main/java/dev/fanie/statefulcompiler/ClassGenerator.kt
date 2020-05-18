@@ -3,7 +3,7 @@ package dev.fanie.statefulcompiler
 import java.io.File
 
 class ClassGenerator(private val generationDirectory: File) {
-    fun generate(classPackage: String, className: String, classSource: String): Boolean {
+    private fun generate(classPackage: String, className: String, classSource: String): Boolean {
         return try {
             val classDirectory = File(generationDirectory, getRelativePath(classPackage))
             classDirectory.mkdirs()

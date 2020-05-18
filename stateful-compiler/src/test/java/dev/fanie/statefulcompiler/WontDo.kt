@@ -5,5 +5,5 @@ package dev.fanie.statefulcompiler
  *
  * @param reason a string explaining why the implementation will not be implemented.
  */
-fun WONTDO(reason: String = "Not needed for tests"): Nothing =
+internal fun WONTDO(reason: String = "Not needed for tests"): Nothing =
     throw NotImplementedError("The operation will not be implemented implemented: $reason")

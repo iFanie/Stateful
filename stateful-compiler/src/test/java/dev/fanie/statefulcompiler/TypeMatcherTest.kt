@@ -192,25 +192,26 @@ class TypeMatcherTest {
     }
 }
 
-fun boolean() = executableElement("boolean", false)
-fun byte() = executableElement("byte", false)
-fun char() = executableElement("char", false)
-fun short() = executableElement("short", false)
-fun int() = executableElement("int", false)
-fun long() = executableElement("long", false)
-fun float() = executableElement("float", false)
-fun double() = executableElement("double", false)
+private fun boolean() = executableElement("boolean", false)
+private fun byte() = executableElement("byte", false)
+private fun char() = executableElement("char", false)
+private fun short() = executableElement("short", false)
+private fun int() = executableElement("int", false)
+private fun long() = executableElement("long", false)
+private fun float() = executableElement("float", false)
+private fun double() = executableElement("double", false)
 
-fun Boolean(nullable: Boolean = false) = executableElement("java.lang.Boolean", nullable)
-fun Byte(nullable: Boolean = false) = executableElement("java.lang.Byte", nullable)
-fun Char(nullable: Boolean = false) = executableElement("java.lang.Char", nullable)
-fun Short(nullable: Boolean = false) = executableElement("java.lang.Short", nullable)
-fun Int(nullable: Boolean = false) = executableElement("java.lang.Integer", nullable)
-fun Long(nullable: Boolean = false) = executableElement("java.lang.Long", nullable)
-fun Float(nullable: Boolean = false) = executableElement("java.lang.Float", nullable)
-fun Double(nullable: Boolean = false) = executableElement("java.lang.Double", nullable)
-fun String(nullable: Boolean = false) = executableElement("java.lang.String", nullable)
-fun CharSequence(nullable: Boolean = false) = executableElement("java.lang.CharSequence", nullable)
+private fun Boolean(nullable: Boolean = false) = executableElement("java.lang.Boolean", nullable)
+private fun Byte(nullable: Boolean = false) = executableElement("java.lang.Byte", nullable)
+private fun Char(nullable: Boolean = false) = executableElement("java.lang.Char", nullable)
+private fun Short(nullable: Boolean = false) = executableElement("java.lang.Short", nullable)
+private fun Int(nullable: Boolean = false) = executableElement("java.lang.Integer", nullable)
+private fun Long(nullable: Boolean = false) = executableElement("java.lang.Long", nullable)
+private fun Float(nullable: Boolean = false) = executableElement("java.lang.Float", nullable)
+private fun Double(nullable: Boolean = false) = executableElement("java.lang.Double", nullable)
+private fun String(nullable: Boolean = false) = executableElement("java.lang.String", nullable)
+private fun CharSequence(nullable: Boolean = false) =
+    executableElement("java.lang.CharSequence", nullable)
 
 private fun executableElement(returnType: String = "test", nullable: Boolean) =
     object : ExecutableElement {
