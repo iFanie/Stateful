@@ -37,7 +37,7 @@ class ExtensionsKtTest {
     }
 }
 
-fun executableElement(
+private fun executableElement(
     name: String = "test",
     returnType: String = "test"
 ) =
