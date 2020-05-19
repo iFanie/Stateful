@@ -91,4 +91,42 @@ class View : ModelUpdateListener {
         /* update the title */
     }
 }
+
+### Install
+- Configure your project to consume GitHub packages
+    - Generate an access token with `read packages` permission, more details here: [GitHub Help](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-gradle-for-use-with-github-packages)
+    - Add the maven repository to your `Project` dependencies
+```groovy
+allprojects {
+    repositories {
+        maven {
+            url = uri("https://maven.pkg.github.com/iFanie/Stateful")
+            credentials {
+                username = ...
+                password = ...
+            }
+        }
+    }
+}
 ```
+
+- Add kapt generated classes to your `Module` sourceSets
+```groovy
+sourceSets {
+    main {
+        java {
+            srcDir "${buildDir.absolutePath}/generated/source/kaptKotlin/"
+        }
+    }
+}
+```
+
+- Add the Stateful dependencies to your `Module`
+```groovy
+dependencies {
+    implementation 'dev.fanie:stateful:0.0.1'
+    kapt 'dev.fanie:stateful-compiler:0.0.1'
+}
+```
+
+- You can use the `app` module as a reference for how the packages are accessed and used
