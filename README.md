@@ -96,7 +96,8 @@ class View : ModelUpdateListener {
 ### Install
 - Configure your project to consume GitHub packages
     - Generate an access token with `read packages` permission, more details here: [GitHub Help](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-gradle-for-use-with-github-packages)
-    - Add the maven repository to your `Project` dependencies
+    - Add the maven repository to your `Project` dependencies; `username` is your user ID and `password` is the key 
+      generated previously
 ```groovy
 allprojects {
     repositories {
