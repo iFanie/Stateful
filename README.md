@@ -91,6 +91,7 @@ class View : ModelUpdateListener {
         /* update the title */
     }
 }
+```
 
 ### Install
 - Configure your project to consume GitHub packages
