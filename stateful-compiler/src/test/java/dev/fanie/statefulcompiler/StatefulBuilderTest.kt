@@ -54,6 +54,10 @@ class StatefulBuilderTest {
             |
             |        currentCls = newCls
             |    }
+            |    
+            |    fun clear() {
+            |        currentCls = null
+            |    }
             |}
             |
         """.trimMargin(), result
