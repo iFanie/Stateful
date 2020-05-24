@@ -1,12 +1,26 @@
 package dev.fanie.statefulcompiler
 
+import dev.fanie.statefulcompiler.util.boolean
+import dev.fanie.statefulcompiler.util.byte
+import dev.fanie.statefulcompiler.util.char
+import dev.fanie.statefulcompiler.util.double
+import dev.fanie.statefulcompiler.util.executableElement
+import dev.fanie.statefulcompiler.util.float
+import dev.fanie.statefulcompiler.util.int
+import dev.fanie.statefulcompiler.util.jBoolean
+import dev.fanie.statefulcompiler.util.jByte
+import dev.fanie.statefulcompiler.util.jChar
+import dev.fanie.statefulcompiler.util.jCharSequence
+import dev.fanie.statefulcompiler.util.jDouble
+import dev.fanie.statefulcompiler.util.jFloat
+import dev.fanie.statefulcompiler.util.jInt
+import dev.fanie.statefulcompiler.util.jLong
+import dev.fanie.statefulcompiler.util.jShort
+import dev.fanie.statefulcompiler.util.jString
+import dev.fanie.statefulcompiler.util.long
+import dev.fanie.statefulcompiler.util.short
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import java.lang.reflect.Proxy
-import javax.lang.model.element.*
-import javax.lang.model.type.TypeKind
-import javax.lang.model.type.TypeMirror
-import javax.lang.model.type.TypeVisitor
 
 class TypeMatcherTest {
     @Test
@@ -59,121 +73,121 @@ class TypeMatcherTest {
 
     @Test
     fun `when matching a Boolean, then the result is the expected`() {
-        val result = Boolean().type
+        val result = jBoolean().type
         assertEquals(Boolean::class.qualifiedName, result)
     }
 
     @Test
     fun `when matching a Byte, then the result is the expected`() {
-        val result = Byte().type
+        val result = jByte().type
         assertEquals(Byte::class.qualifiedName, result)
     }
 
     @Test
     fun `when matching a Char, then the result is the expected`() {
-        val result = Char().type
+        val result = jChar().type
         assertEquals(Char::class.qualifiedName, result)
     }
 
     @Test
     fun `when matching a Short, then the result is the expected`() {
-        val result = Short().type
+        val result = jShort().type
         assertEquals(Short::class.qualifiedName, result)
     }
 
     @Test
     fun `when matching a Int, then the result is the expected`() {
-        val result = Int().type
+        val result = jInt().type
         assertEquals(Int::class.qualifiedName, result)
     }
 
     @Test
     fun `when matching a Long, then the result is the expected`() {
-        val result = Long().type
+        val result = jLong().type
         assertEquals(Long::class.qualifiedName, result)
     }
 
     @Test
     fun `when matching a Float, then the result is the expected`() {
-        val result = Float().type
+        val result = jFloat().type
         assertEquals(Float::class.qualifiedName, result)
     }
 
     @Test
     fun `when matching a Double, then the result is the expected`() {
-        val result = Double().type
+        val result = jDouble().type
         assertEquals(Double::class.qualifiedName, result)
     }
 
     @Test
     fun `when matching a String, then the result is the expected`() {
-        val result = String().type
+        val result = jString().type
         assertEquals(String::class.qualifiedName, result)
     }
 
     @Test
     fun `when matching a CharSequence, then the result is the expected`() {
-        val result = CharSequence().type
+        val result = jCharSequence().type
         assertEquals(CharSequence::class.qualifiedName, result)
     }
 
     @Test
     fun `when matching a nullable Boolean, then the result is the expected`() {
-        val result = Boolean(nullable = true).type
+        val result = jBoolean(nullable = true).type
         assertEquals(Boolean::class.qualifiedName + "?", result)
     }
 
     @Test
     fun `when matching a nullable Byte, then the result is the expected`() {
-        val result = Byte(nullable = true).type
+        val result = jByte(nullable = true).type
         assertEquals(Byte::class.qualifiedName + "?", result)
     }
 
     @Test
     fun `when matching a nullable Char, then the result is the expected`() {
-        val result = Char(nullable = true).type
+        val result = jChar(nullable = true).type
         assertEquals(Char::class.qualifiedName + "?", result)
     }
 
     @Test
     fun `when matching a nullable Short, then the result is the expected`() {
-        val result = Short(nullable = true).type
+        val result = jShort(nullable = true).type
         assertEquals(Short::class.qualifiedName + "?", result)
     }
 
     @Test
     fun `when matching a nullable Int, then the result is the expected`() {
-        val result = Int(nullable = true).type
+        val result = jInt(nullable = true).type
         assertEquals(Int::class.qualifiedName + "?", result)
     }
 
     @Test
     fun `when matching a nullable Long, then the result is the expected`() {
-        val result = Long(nullable = true).type
+        val result = jLong(nullable = true).type
         assertEquals(Long::class.qualifiedName + "?", result)
     }
 
     @Test
     fun `when matching a nullable Float, then the result is the expected`() {
-        val result = Float(nullable = true).type
+        val result = jFloat(nullable = true).type
         assertEquals(Float::class.qualifiedName + "?", result)
     }
 
     @Test
     fun `when matching a nullable Double, then the result is the expected`() {
-        val result = Double(nullable = true).type
+        val result = jDouble(nullable = true).type
         assertEquals(Double::class.qualifiedName + "?", result)
     }
 
     @Test
     fun `when matching a nullable String, then the result is the expected`() {
-        val result = String(nullable = true).type
+        val result = jString(nullable = true).type
         assertEquals(String::class.qualifiedName + "?", result)
     }
 
     @Test
     fun `when matching a nullable CharSequence, then the result is the expected`() {
-        val result = CharSequence(nullable = true).type
+        val result = jCharSequence(nullable = true).type
         assertEquals(CharSequence::class.qualifiedName + "?", result)
     }
 
@@ -191,125 +205,3 @@ class TypeMatcherTest {
         assertEquals("$type?", result)
     }
 }
-
-private fun boolean() = executableElement("boolean", false)
-private fun byte() = executableElement("byte", false)
-private fun char() = executableElement("char", false)
-private fun short() = executableElement("short", false)
-private fun int() = executableElement("int", false)
-private fun long() = executableElement("long", false)
-private fun float() = executableElement("float", false)
-private fun double() = executableElement("double", false)
-
-private fun Boolean(nullable: Boolean = false) = executableElement("java.lang.Boolean", nullable)
-private fun Byte(nullable: Boolean = false) = executableElement("java.lang.Byte", nullable)
-private fun Char(nullable: Boolean = false) = executableElement("java.lang.Char", nullable)
-private fun Short(nullable: Boolean = false) = executableElement("java.lang.Short", nullable)
-private fun Int(nullable: Boolean = false) = executableElement("java.lang.Integer", nullable)
-private fun Long(nullable: Boolean = false) = executableElement("java.lang.Long", nullable)
-private fun Float(nullable: Boolean = false) = executableElement("java.lang.Float", nullable)
-private fun Double(nullable: Boolean = false) = executableElement("java.lang.Double", nullable)
-private fun String(nullable: Boolean = false) = executableElement("java.lang.String", nullable)
-private fun CharSequence(nullable: Boolean = false) =
-    executableElement("java.lang.CharSequence", nullable)
-
-private fun executableElement(returnType: String = "test", nullable: Boolean) =
-    object : ExecutableElement {
-        override fun getDefaultValue(): AnnotationValue {
-            WONTDO()
-        }
-
-        override fun getModifiers(): MutableSet<Modifier> {
-            WONTDO()
-        }
-
-        override fun getSimpleName(): Name {
-            WONTDO()
-        }
-
-        override fun getKind(): ElementKind {
-            WONTDO()
-        }
-
-        override fun asType(): TypeMirror {
-            WONTDO()
-        }
-
-        override fun getReturnType(): TypeMirror = object : TypeMirror {
-            override fun getKind(): TypeKind {
-                WONTDO()
-            }
-
-            override fun <R : Any?, P : Any?> accept(p0: TypeVisitor<R, P>?, p1: P): R {
-                WONTDO()
-            }
-
-            override fun <A : Annotation?> getAnnotationsByType(p0: Class<A>?): Array<A> {
-                WONTDO()
-            }
-
-            override fun <A : Annotation?> getAnnotation(p0: Class<A>?): A {
-                WONTDO()
-            }
-
-            override fun getAnnotationMirrors(): MutableList<out AnnotationMirror> {
-                WONTDO()
-            }
-
-            override fun toString(): String = returnType
-        }
-
-        override fun getReceiverType(): TypeMirror {
-            WONTDO()
-        }
-
-        override fun getThrownTypes(): MutableList<out TypeMirror> {
-            WONTDO()
-        }
-
-        override fun getTypeParameters(): MutableList<out TypeParameterElement> {
-            WONTDO()
-        }
-
-        override fun getEnclosingElement(): Element {
-            WONTDO()
-        }
-
-        override fun <R : Any?, P : Any?> accept(p0: ElementVisitor<R, P>?, p1: P): R {
-            WONTDO()
-        }
-
-        override fun getParameters(): MutableList<out VariableElement> {
-            WONTDO()
-        }
-
-        override fun isVarArgs(): Boolean {
-            WONTDO()
-        }
-
-        override fun <A : Annotation?> getAnnotationsByType(p0: Class<A>?): Array<A> {
-            WONTDO()
-        }
-
-        override fun isDefault(): Boolean {
-            WONTDO()
-        }
-
-        override fun <A : Annotation?> getAnnotation(p0: Class<A>?): A? =
-            if (p0?.equals(org.jetbrains.annotations.NotNull::class.java) == true && !nullable) {
-                Proxy.newProxyInstance(
-                    org.jetbrains.annotations.NotNull::class.java.classLoader,
-                    arrayOf(org.jetbrains.annotations.NotNull::class.java)
-                ) { _, _, _ -> WONTDO() } as A
-            } else {
-                null
-            }
-
-        override fun getAnnotationMirrors(): MutableList<out AnnotationMirror> {
-            WONTDO()
-        }
-
-        override fun getEnclosedElements(): MutableList<out Element> {
-            WONTDO()
-        }
-    }

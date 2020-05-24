@@ -1,31 +1,32 @@
-def githubProperties = new Properties()
-githubProperties.load(new FileInputStream(rootProject.file("github.properties")))
-
-ext {
-    stateful = [
-            GROUP_ID    : 'dev.fanie',
-            VERSION     : '0.0.2',
-            github      : [
-                    ID : githubProperties['gpr.usr'],
-                    KEY: githubProperties['gpr.key']
-            ],
-            dependencies: [
-                    JAVA  : '8',
-                    KOTLIN: '1.3.72',
-                    JUNIT : '4.13'
-            ]
-    ]
-}
-
 buildscript {
+    def githubProperties = new Properties()
+    githubProperties.load(new FileInputStream(rootProject.file("github.properties")))
+
+    ext {
+        stateful = [
+                GROUP_ID    : 'dev.fanie',
+                VERSION     : '0.0.2',
+                github      : [
+                        ID : githubProperties['gpr.usr'],
+                        KEY: githubProperties['gpr.key']
+                ],
+                dependencies: [
+                        GRADLE: '3.6.3',
+                        JAVA  : '8',
+                        KOTLIN: '1.3.72',
+                        JUNIT : '4.13'
+                ]
+        ]
+    }
+
     repositories {
         google()
         jcenter()
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:3.6.3"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.72"
+        classpath "com.android.tools.build:gradle:${stateful.dependencies.GRADLE}"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${stateful.dependencies.KOTLIN}"
     }
 }
 

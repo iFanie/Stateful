@@ -1,12 +1,13 @@
 package dev.fanie.statefulcompiler
 
+import dev.fanie.statefulcompiler.util.classBuilder
 import org.junit.After
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import java.io.File
 
-class ClassGeneratorTest {
+internal class ClassGeneratorTest {
     private val rootDir = File("class-generator-test")
     private lateinit var underTest: ClassGenerator
 
@@ -33,14 +34,3 @@ class ClassGeneratorTest {
         assertTrue(expectedFile.isFile)
     }
 }
-
-private fun classBuilder(
-    classPackage: String = "test",
-    className: String = "test",
-    classSource: String = "test"
-) =
-    object : ClassBuilder {
-        override val classPackage: String = classPackage
-        override val className: String = className
-        override val classSource: String = classSource
-    }
