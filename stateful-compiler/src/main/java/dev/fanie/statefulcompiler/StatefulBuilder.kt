@@ -19,7 +19,13 @@ class StatefulBuilder(
                         |    private val $updateListenerName: ${statefulName}UpdateListener,
                         |    initial$statefulName: $statefulClass? = null
                         |) {
-                        |    private var current$statefulName = initial$statefulName
+                        |    private var current$statefulName: $statefulClass? = null
+                        |    
+                        |    init {
+                        |        initial$statefulName?.let {
+                        |            accept(it)
+                        |        }
+                        |    }
                         |
                         |    fun accept(new$statefulName: $statefulClass) {
                         |        $invocations

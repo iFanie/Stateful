@@ -34,7 +34,13 @@ class StatefulBuilderTest {
             |    private val clsUpdateListener: ClsUpdateListener,
             |    initialCls: Cls? = null
             |) {
-            |    private var currentCls = initialCls
+            |    private var currentCls: Cls? = null
+            |    
+            |    init {
+            |        initialCls?.let {
+            |            accept(it)
+            |        }
+            |    }
             |
             |    fun accept(newCls: Cls) {
             |        
