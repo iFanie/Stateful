@@ -74,6 +74,10 @@ class StatefulModel(
 
         currentModel = newModel
     }
+
+    fun clear() {
+        currentModel = null
+    }
 }
 ```
 
@@ -126,8 +130,8 @@ sourceSets {
 - Add the Stateful dependencies to your `Module`
 ```groovy
 dependencies {
-    implementation 'dev.fanie:stateful:0.0.1'
-    kapt 'dev.fanie:stateful-compiler:0.0.1'
+    implementation 'dev.fanie:stateful:0.0.2'
+    kapt 'dev.fanie:stateful-compiler:0.0.2'
 }
 ```
 
