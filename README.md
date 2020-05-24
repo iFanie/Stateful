@@ -48,7 +48,13 @@ class StatefulModel(
     private val modelUpdateListener: ModelUpdateListener,
     initialModel: Model? = null
 ) {
-    private var currentModel = initialModel
+    private var currentModel: Model? = null
+
+    init {
+        initialModel?.let {
+            accept(it)
+        }
+    }
 
     fun accept(newModel: Model) {
         if (!Objects.equals(currentModel?.title, newModel.title)) {
@@ -130,8 +136,8 @@ sourceSets {
 - Add the Stateful dependencies to your `Module`
 ```groovy
 dependencies {
-    implementation 'dev.fanie:stateful:0.0.2'
-    kapt 'dev.fanie:stateful-compiler:0.0.2'
+    implementation 'dev.fanie:stateful:0.0.3'
+    kapt 'dev.fanie:stateful-compiler:0.0.3'
 }
 ```
 
