@@ -4,7 +4,7 @@ githubProperties.load(new FileInputStream(rootProject.file("github.properties"))
 ext {
     stateful = [
             GROUP_ID    : 'dev.fanie',
-            VERSION     : '0.0.1',
+            VERSION     : '0.0.2',
             github      : [
                     ID : githubProperties['gpr.usr'],
                     KEY: githubProperties['gpr.key']
