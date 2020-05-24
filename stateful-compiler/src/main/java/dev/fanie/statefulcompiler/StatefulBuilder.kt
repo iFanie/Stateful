@@ -25,6 +25,10 @@ class StatefulBuilder(
                         |        $invocations
                         |        current$statefulName = new$statefulName
                         |    }
+                        |    
+                        |    fun clear() {
+                        |        current$statefulName = null
+                        |    }
                         |}
                         |
         """.trimMargin()
