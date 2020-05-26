@@ -31,6 +31,10 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // implementation project(':stateful')
+    // kapt project(':stateful-compiler')
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${stateful.dependencies.KOTLIN}"
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.core:core-ktx:1.2.0'

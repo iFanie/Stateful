@@ -18,7 +18,7 @@ class UpdateListenerBuilderTest {
         val className = "TestClass"
         val result = UpdateListenerBuilder("irrelevant", className, listOf()).className
 
-        Assert.assertEquals("${className}UpdateListener", result)
+        Assert.assertEquals("Stateful${className}UpdateListener", result)
     }
 
     @Test
@@ -34,7 +34,7 @@ class UpdateListenerBuilderTest {
             """
             |package pkg.stateful
             |
-            |interface ClsUpdateListener {
+            |interface StatefulClsUpdateListener {
             |    
             |    fun onOneUpdated(newOne: kotlin.Int) {}
             |    fun onOneUpdated(oldOne: kotlin.Int?, newOne: kotlin.Int) {}

@@ -16,7 +16,7 @@ class StatefulBuilder(
         get() = """     |package $classPackage
                         |
                         |class $className(
-                        |    private val $updateListenerName: ${statefulName}UpdateListener,
+                        |    private val $updateListenerName: Stateful${statefulName}UpdateListener,
                         |    initial$statefulName: $statefulClass? = null
                         |) {
                         |    private var current$statefulName: $statefulClass? = null
