@@ -30,7 +30,7 @@ class StatefulBuilderTest {
             |package pkg.stateful
             |
             |class StatefulCls(
-            |    private val clsUpdateListener: ClsUpdateListener,
+            |    private val clsUpdateListener: StatefulClsUpdateListener,
             |    initialCls: Cls? = null
             |) {
             |    private var currentCls: Cls? = null

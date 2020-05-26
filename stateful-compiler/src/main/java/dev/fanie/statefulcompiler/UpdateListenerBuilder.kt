@@ -10,7 +10,7 @@ class UpdateListenerBuilder(
     private val statefulName = statefulClass.replace("$statefulPackage.", "").capitalize()
 
     override val classPackage = "$statefulPackage.stateful"
-    override val className = "${statefulName}UpdateListener"
+    override val className = "Stateful${statefulName}UpdateListener"
     override val classSource
         get() = """     |package $classPackage
                         |
