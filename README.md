@@ -27,7 +27,7 @@ data class Model( ... )
 
 - Build. For the above model, the processor will generate the following classes
 ```kotlin
-interface ModelUpdateListener {
+interface StatefulModelUpdateListener {
     fun onTitleUpdated(newTitle: String) {}
     fun onTitleUpdated(oldTitle: String?, newTitle: String) {}
     fun onTitleUpdated(newModel: Model) {}
@@ -45,7 +45,7 @@ interface ModelUpdateListener {
 }
 
 class StatefulModel(
-    private val modelUpdateListener: ModelUpdateListener,
+    private val modelUpdateListener: StatefulModelUpdateListener,
     initialModel: Model? = null
 ) {
     private var currentModel: Model? = null
@@ -90,7 +90,7 @@ class StatefulModel(
 - Implement the above interface, overriding whatever makes sense and pass all model updates
   through the Stateful wrapper class.
 ```kotlin
-class View : ModelUpdateListener {
+class View : StatefulModelUpdateListener {
     private val statefulModel = StatefulModel(this)
 
     fun render(model: Model) {
@@ -136,8 +136,8 @@ sourceSets {
 - Add the Stateful dependencies to your `Module`
 ```groovy
 dependencies {
-    implementation 'dev.fanie:stateful:0.0.3'
-    kapt 'dev.fanie:stateful-compiler:0.0.3'
+    implementation 'dev.fanie:stateful:0.0.4'
+    kapt 'dev.fanie:stateful-compiler:0.0.4'
 }
 ```
 
