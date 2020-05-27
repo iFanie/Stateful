@@ -18,77 +18,39 @@ class View {
 }
 ```
 
-Instead rendering everything on every update or checking the updates manually
+Instead of rendering everything on every update or checking the updates manually
 - Annotate the Model
 ```kotlin
 @Stateful
 data class Model( ... )
 ```
 
-- Build. For the above model, the processor will generate the following classes
+- Build. For any given annotated type, the processor will generate two classes
+    - A listener interface with functions that will br invoked when each individual public property
+      is updated. For each property there will be 4 granular overloads of the callback, each with a
+      default implementation to avoid clutter.
 ```kotlin
-interface StatefulModelUpdateListener {
+interface StatefulModelListener {
     fun onTitleUpdated(newTitle: String) {}
     fun onTitleUpdated(oldTitle: String?, newTitle: String) {}
     fun onTitleUpdated(newModel: Model) {}
     fun onTitleUpdated(oldModel: Model?, newModel: Model) {}
 
     fun onTitleFontSizeUpdated(newTitleFontSize: Float?) {}
-    fun onTitleFontSizeUpdated(oldTitleFontSize: Float?, newTitleFontSize: Float?) {}
-    fun onTitleFontSizeUpdated(newModel: Model) {}
-    fun onTitleFontSizeUpdated(oldModel: Model?, newModel: Model) {}
-
-    fun onIsTitleVisibleUpdated(newIsTitleVisible: Boolean) {}
-    fun onIsTitleVisibleUpdated(oldIsTitleVisible: Boolean?, newIsTitleVisible: Boolean) {}
-    fun onIsTitleVisibleUpdated(newModel: Model) {}
-    fun onIsTitleVisibleUpdated(oldModel: Model?, newModel: Model) {}
+    ...
 }
-
-class StatefulModel(
-    private val modelUpdateListener: StatefulModelUpdateListener,
-    initialModel: Model? = null
-) {
-    private var currentModel: Model? = null
-
-    init {
-        initialModel?.let {
-            accept(it)
-        }
-    }
-
-    fun accept(newModel: Model) {
-        if (!Objects.equals(currentModel?.title, newModel.title)) {
-            modelUpdateListener.onTitleUpdated(newModel.title)
-            modelUpdateListener.onTitleUpdated(currentModel?.title, newModel.title)
-            modelUpdateListener.onTitleUpdated(newModel)
-            modelUpdateListener.onTitleUpdated(currentModel, newModel)
-        }
-
-        if (!Objects.equals(currentModel?.titleFontSize, newModel.titleFontSize)) {
-            modelUpdateListener.onTitleFontSizeUpdated(newModel.titleFontSize)
-            modelUpdateListener.onTitleFontSizeUpdated(currentModel?.titleFontSize, newModel.titleFontSize)
-            modelUpdateListener.onTitleFontSizeUpdated(newModel)
-            modelUpdateListener.onTitleFontSizeUpdated(currentModel, newModel)
-        }
-
-        if (!Objects.equals(currentModel?.isTitleVisible, newModel.isTitleVisible)) {
-            modelUpdateListener.onIsTitleVisibleUpdated(newModel.isTitleVisible)
-            modelUpdateListener.onIsTitleVisibleUpdated(currentModel?.isTitleVisible, newModel.isTitleVisible)
-            modelUpdateListener.onIsTitleVisibleUpdated(newModel)
-            modelUpdateListener.onIsTitleVisibleUpdated(currentModel, newModel)
-        }
-
-        currentModel = newModel
-    }
-
-    fun clear() {
-        currentModel = null
-    }
+```
+    - A wrapper class through which the new model instances will be passed and which, after diffing
+      through the public properties, will invoke the listener appropriately.
+```kotlin
+class StatefulModel {
+    fun accept(newModel: Model) { ... }
+    fun clear() { ... }
 }
 ```
 
-- Implement the above interface, overriding whatever makes sense and pass all model updates
-  through the Stateful wrapper class.
+- Implement the above interface, overriding whatever makes sense and pass all model updates through
+  the Stateful wrapper class.
 ```kotlin
 class View : StatefulModelUpdateListener {
     private val statefulModel = StatefulModel(this)
@@ -102,6 +64,14 @@ class View : StatefulModelUpdateListener {
     }
 }
 ```
+
+- The `Stateful` annotation has a `type` argument, with a default value of `StatefulType.INSTANCE`.
+    - The `INSTANCE` type caches only the current value and performs diffing of new instances with
+      the respective current.
+    - The `STACK` type holds a stack cache and allows performing a `rollback` to previous instances.
+      What that means is that upon performing a rollback, the previous instance before the current one
+      is accessed, diffing is performed with the current and the previous instance and the previous
+      instance becomes the current.
 
 ### Install
 - Configure your project to consume GitHub packages
@@ -136,9 +106,26 @@ sourceSets {
 - Add the Stateful dependencies to your `Module`
 ```groovy
 dependencies {
-    implementation 'dev.fanie:stateful:0.0.4'
-    kapt 'dev.fanie:stateful-compiler:0.0.4'
+    implementation 'dev.fanie:stateful:0.1.1'
+    kapt 'dev.fanie:stateful-compiler:0.1.1'
 }
 ```
 
 - You can use the `app` module as a reference for how the packages are accessed and used
+
+### Licence
+```
+Copyright 2020 Fanis Veizis
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+```
