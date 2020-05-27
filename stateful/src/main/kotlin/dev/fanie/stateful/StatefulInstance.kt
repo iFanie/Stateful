@@ -3,9 +3,15 @@ package dev.fanie.stateful
 /**
  * Stateful wrapper for a given [Model] type, operating with a single instance.
  */
-abstract class StatefulInstance<Model : Any>(
+interface StatefulInstance<Model : Any> : StatefulUpdateReceiver<Model>, StatefulUpdateNotifier<Model>
+
+/**
+ * Partial implementation of the [StatefulInstance] interface, without an implementation for the
+ * [StatefulUpdateNotifier.announce] function.
+ */
+abstract class AbstractStatefulInstance<Model : Any>(
     initialInstance: Model? = null
-) : StatefulUpdateReceiver<Model>, StatefulUpdateNotifier<Model> {
+) : StatefulInstance<Model> {
     private var instance: Model? = null
 
     init {
