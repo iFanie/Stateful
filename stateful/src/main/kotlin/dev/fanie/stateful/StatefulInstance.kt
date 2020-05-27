@@ -9,9 +9,7 @@ interface StatefulInstance<Model : Any> : StatefulUpdateReceiver<Model>, Statefu
  * Partial implementation of the [StatefulInstance] interface, without an implementation for the
  * [StatefulUpdateNotifier.announce] function.
  */
-abstract class AbstractStatefulInstance<Model : Any>(
-    initialInstance: Model? = null
-) : StatefulInstance<Model> {
+abstract class AbstractStatefulInstance<Model : Any>(initialInstance: Model? = null) : StatefulInstance<Model> {
     private var instance: Model? = null
 
     init {
