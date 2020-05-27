@@ -1,7 +1,7 @@
 package dev.fanie.stateful.util
 
-import dev.fanie.stateful.StatefulInstance
-import dev.fanie.stateful.StatefulStack
+import dev.fanie.stateful.AbstractStatefulInstance
+import dev.fanie.stateful.AbstractStatefulStack
 
 internal data class Announcement<Model>(
     val currentInstance: Model?,
@@ -18,7 +18,9 @@ internal class FakeStatefulInstanceState<Model> {
     fun getLatest() = announcements.last()
 }
 
-internal class FakeStatefulInstance<Model : Any>(initialInstance: Model? = null) : StatefulInstance<Model>(initialInstance) {
+internal class FakeStatefulInstance<Model : Any>(
+    initialInstance: Model? = null
+) : AbstractStatefulInstance<Model>(initialInstance) {
     private lateinit var internalState: FakeStatefulInstanceState<Model>
     val state get() = internalState
 
@@ -28,7 +30,9 @@ internal class FakeStatefulInstance<Model : Any>(initialInstance: Model? = null)
     }
 }
 
-internal class FakeStatefulStack<Model : Any>(initialInstance: Model? = null) : StatefulStack<Model>(initialInstance) {
+internal class FakeStatefulStack<Model : Any>(
+    initialInstance: Model? = null
+) : AbstractStatefulStack<Model>(initialInstance) {
     private lateinit var internalState: FakeStatefulInstanceState<Model>
     val state get() = internalState
 
