@@ -2,6 +2,7 @@ package dev.fanie.statefulcompiler
 
 import javax.lang.model.element.ExecutableElement
 
+@Suppress("DefaultLocale")
 class StatefulBuilder(
     statefulPackage: String,
     private val statefulClass: String,
