@@ -1,29 +1,33 @@
 package dev.fanie.statefulcompiler
 
+import dev.fanie.stateful.StatefulType
 import javax.lang.model.element.ExecutableElement
 
 @Suppress("DefaultLocale")
 class StatefulBuilder(
     statefulPackage: String,
     private val statefulClass: String,
-    private val statefulGetters: List<ExecutableElement>
+    private val statefulGetters: List<ExecutableElement>,
+    statefulType: StatefulType
 ) : ClassBuilder {
     private val statefulName = statefulClass.replace("$statefulPackage.", "").capitalize()
     private val updateListenerName = "${statefulName.decapitalize()}UpdateListener"
+    private val abstractName =
+        if (statefulType == StatefulType.INSTANCE) "AbstractStatefulInstance" else "AbstractStatefulStack"
 
     override val classPackage = "$statefulPackage.stateful"
     override val className = "Stateful$statefulName"
     override val classSource
         get() = """     |package $classPackage
                         |
-                        |import dev.fanie.stateful.AbstractStatefulInstance
+                        |import dev.fanie.stateful.$abstractName
                         |import java.util.Objects.equals
                         |import $statefulClass
                         |
                         |class $className(
                         |    private val $updateListenerName: Stateful${statefulName}Listener,
                         |    initial$statefulName: $statefulName? = null
-                        |) : AbstractStatefulInstance<$statefulName>(initial$statefulName) {
+                        |) : $abstractName<$statefulName>(initial$statefulName) {
                         |    final override fun announce(current$statefulName: $statefulName?, new$statefulName: $statefulName) {
                         |        $invocations
                         |    }

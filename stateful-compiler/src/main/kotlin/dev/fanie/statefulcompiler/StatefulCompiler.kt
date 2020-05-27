@@ -35,12 +35,11 @@ class StatefulCompiler : AbstractProcessor() {
                 val statefulClass = processingUtils.getClassOf(stateful)
                 val statefulGetters = processingUtils.getGettersOf(stateful)
 
-                val updateListenerBuilder =
-                    ListenerBuilder(statefulPackage, statefulClass, statefulGetters)
+                val updateListenerBuilder = ListenerBuilder(statefulPackage, statefulClass, statefulGetters)
                 classGenerator.generate(updateListenerBuilder)
 
-                val statefulBuilder =
-                    StatefulBuilder(statefulPackage, statefulClass, statefulGetters)
+                val statefulType = stateful.getAnnotation(Stateful::class.java).type
+                val statefulBuilder = StatefulBuilder(statefulPackage, statefulClass, statefulGetters, statefulType)
                 classGenerator.generate(statefulBuilder)
             }
     }
