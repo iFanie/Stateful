@@ -15,8 +15,14 @@ class ListenerBuilder(
     override val classSource
         get() = """     |package $classPackage
                         |
+                        |import javax.annotation.Generated
                         |import $statefulClass
                         |
+                        |/**
+                        | * Contains callbacks to be invoked on updates of each individual public property
+                        | * of an instance of the [$statefulName] type.
+                        | */
+                        |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
                         |interface $className {
                         |    $functions
                         |}

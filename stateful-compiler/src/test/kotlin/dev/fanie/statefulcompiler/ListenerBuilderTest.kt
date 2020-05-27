@@ -34,8 +34,14 @@ class ListenerBuilderTest {
             """
             |package pkg.stateful
             |
+            |import javax.annotation.Generated
             |import Cls
             |
+            |/**
+            | * Contains callbacks to be invoked on updates of each individual public property
+            | * of an instance of the [Cls] type.
+            | */
+            |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
             |interface StatefulClsListener {
             |    fun onOneUpdated(newOne: kotlin.Int) {}
             |    fun onOneUpdated(currentOne: kotlin.Int?, newOne: kotlin.Int) {}

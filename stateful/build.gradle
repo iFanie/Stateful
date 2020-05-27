@@ -30,5 +30,6 @@ publishing {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${stateful.dependencies.KOTLIN}"
+    api "javax.annotation:javax.annotation-api:${stateful.dependencies.JAVAX_ANNOTATIONS}"
     testImplementation "junit:junit:${stateful.dependencies.JUNIT}"
 }

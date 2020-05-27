@@ -32,8 +32,13 @@ class StatefulBuilderTest {
             |
             |import dev.fanie.stateful.AbstractStatefulInstance
             |import java.util.Objects.equals
+            |import javax.annotation.Generated
             |import Cls
             |
+            |/**
+            | * Implementation of the [AbstractStatefulInstance] for the [Cls] type.
+            | */
+            |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
             |class StatefulCls(
             |    private val clsUpdateListener: StatefulClsListener,
             |    initialCls: Cls? = null
@@ -69,8 +74,13 @@ class StatefulBuilderTest {
             |
             |import dev.fanie.stateful.AbstractStatefulStack
             |import java.util.Objects.equals
+            |import javax.annotation.Generated
             |import Cls
             |
+            |/**
+            | * Implementation of the [AbstractStatefulStack] for the [Cls] type.
+            | */
+            |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
             |class StatefulCls(
             |    private val clsUpdateListener: StatefulClsListener,
             |    initialCls: Cls? = null

@@ -22,8 +22,13 @@ class StatefulBuilder(
                         |
                         |import dev.fanie.stateful.$abstractName
                         |import java.util.Objects.equals
+                        |import javax.annotation.Generated
                         |import $statefulClass
                         |
+                        |/**
+                        | * Implementation of the [$abstractName] for the [$statefulName] type.
+                        | */
+                        |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
                         |class $className(
                         |    private val $updateListenerName: Stateful${statefulName}Listener,
                         |    initial$statefulName: $statefulName? = null
