@@ -11,10 +11,11 @@ buildscript {
                         KEY: githubProperties['gpr.key']
                 ],
                 dependencies: [
-                        GRADLE: '3.6.3',
-                        JAVA  : '8',
-                        KOTLIN: '1.3.72',
-                        JUNIT : '4.13'
+                        GRADLE           : '3.6.3',
+                        JAVA             : '8',
+                        KOTLIN           : '1.3.72',
+                        JUNIT            : '4.13',
+                        JAVAX_ANNOTATIONS: '1.3.2'
                 ]
         ]
     }
