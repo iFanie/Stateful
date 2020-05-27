@@ -29,39 +29,28 @@ class StatefulBuilderTest {
             """
             |package pkg.stateful
             |
-            |class StatefulCls(
-            |    private val clsUpdateListener: StatefulClsUpdateListener,
-            |    initialCls: Cls? = null
-            |) {
-            |    private var currentCls: Cls? = null
-            |    
-            |    init {
-            |        initialCls?.let {
-            |            accept(it)
-            |        }
-            |    }
+            |import dev.fanie.stateful.AbstractStatefulInstance
+            |import java.util.Objects.equals
+            |import Cls
             |
-            |    fun accept(newCls: Cls) {
-            |        
-            |        if (!java.util.Objects.equals(currentCls?.one, newCls.one)) {
+            |class StatefulCls(
+            |    private val clsUpdateListener: StatefulClsListener,
+            |    initialCls: Cls? = null
+            |) : AbstractStatefulInstance<Cls>(initialCls) {
+            |    final override fun announce(currentCls: Cls?, newCls: Cls) {
+            |        if (!equals(currentCls?.one, newCls.one)) {
             |            clsUpdateListener.onOneUpdated(newCls.one)
             |            clsUpdateListener.onOneUpdated(currentCls?.one, newCls.one)
             |            clsUpdateListener.onOneUpdated(newCls)
             |            clsUpdateListener.onOneUpdated(currentCls, newCls)
             |        }
             |
-            |        if (!java.util.Objects.equals(currentCls?.two, newCls.two)) {
+            |        if (!equals(currentCls?.two, newCls.two)) {
             |            clsUpdateListener.onTwoUpdated(newCls.two)
             |            clsUpdateListener.onTwoUpdated(currentCls?.two, newCls.two)
             |            clsUpdateListener.onTwoUpdated(newCls)
             |            clsUpdateListener.onTwoUpdated(currentCls, newCls)
             |        }
-            |
-            |        currentCls = newCls
-            |    }
-            |    
-            |    fun clear() {
-            |        currentCls = null
             |    }
             |}
             |

@@ -4,11 +4,11 @@ import dev.fanie.statefulcompiler.util.getter
 import org.junit.Assert
 import org.junit.Test
 
-class UpdateListenerBuilderTest {
+class ListenerBuilderTest {
     @Test
     fun `when reading the class package of a UpdateListenerBuilder, then the result is the expected`() {
         val packageName = "test.package"
-        val result = UpdateListenerBuilder(packageName, "irrelevant", listOf()).classPackage
+        val result = ListenerBuilder(packageName, "irrelevant", listOf()).classPackage
 
         Assert.assertEquals("$packageName.stateful", result)
     }
@@ -16,15 +16,15 @@ class UpdateListenerBuilderTest {
     @Test
     fun `when reading the class name of a UpdateListenerBuilder, then the result is the expected`() {
         val className = "TestClass"
-        val result = UpdateListenerBuilder("irrelevant", className, listOf()).className
+        val result = ListenerBuilder("irrelevant", className, listOf()).className
 
-        Assert.assertEquals("Stateful${className}UpdateListener", result)
+        Assert.assertEquals("Stateful${className}Listener", result)
     }
 
     @Test
     fun `when reading the source code of a UpdateListenerBuilder, then the result is the expected`() {
         val result =
-            UpdateListenerBuilder(
+            ListenerBuilder(
                 "pkg",
                 "Cls",
                 listOf(getter("one", "int"), getter("two", "byte"))
@@ -34,18 +34,18 @@ class UpdateListenerBuilderTest {
             """
             |package pkg.stateful
             |
-            |interface StatefulClsUpdateListener {
-            |    
+            |import Cls
+            |
+            |interface StatefulClsListener {
             |    fun onOneUpdated(newOne: kotlin.Int) {}
-            |    fun onOneUpdated(oldOne: kotlin.Int?, newOne: kotlin.Int) {}
+            |    fun onOneUpdated(currentOne: kotlin.Int?, newOne: kotlin.Int) {}
             |    fun onOneUpdated(newCls: Cls) {}
-            |    fun onOneUpdated(oldCls: Cls?, newCls: Cls) {}
+            |    fun onOneUpdated(currentCls: Cls?, newCls: Cls) {}
             |
             |    fun onTwoUpdated(newTwo: kotlin.Byte) {}
-            |    fun onTwoUpdated(oldTwo: kotlin.Byte?, newTwo: kotlin.Byte) {}
+            |    fun onTwoUpdated(currentTwo: kotlin.Byte?, newTwo: kotlin.Byte) {}
             |    fun onTwoUpdated(newCls: Cls) {}
-            |    fun onTwoUpdated(oldCls: Cls?, newCls: Cls) {}
-            |
+            |    fun onTwoUpdated(currentCls: Cls?, newCls: Cls) {}
             |}
             |
         """.trimMargin(), result

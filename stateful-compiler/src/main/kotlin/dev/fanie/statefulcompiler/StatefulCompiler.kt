@@ -36,7 +36,7 @@ class StatefulCompiler : AbstractProcessor() {
                 val statefulGetters = processingUtils.getGettersOf(stateful)
 
                 val updateListenerBuilder =
-                    UpdateListenerBuilder(statefulPackage, statefulClass, statefulGetters)
+                    ListenerBuilder(statefulPackage, statefulClass, statefulGetters)
                 classGenerator.generate(updateListenerBuilder)
 
                 val statefulBuilder =

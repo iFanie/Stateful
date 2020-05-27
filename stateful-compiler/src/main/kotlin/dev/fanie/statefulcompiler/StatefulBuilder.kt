@@ -15,25 +15,16 @@ class StatefulBuilder(
     override val classSource
         get() = """     |package $classPackage
                         |
-                        |class $className(
-                        |    private val $updateListenerName: Stateful${statefulName}UpdateListener,
-                        |    initial$statefulName: $statefulClass? = null
-                        |) {
-                        |    private var current$statefulName: $statefulClass? = null
-                        |    
-                        |    init {
-                        |        initial$statefulName?.let {
-                        |            accept(it)
-                        |        }
-                        |    }
+                        |import dev.fanie.stateful.AbstractStatefulInstance
+                        |import java.util.Objects.equals
+                        |import $statefulClass
                         |
-                        |    fun accept(new$statefulName: $statefulClass) {
+                        |class $className(
+                        |    private val $updateListenerName: Stateful${statefulName}Listener,
+                        |    initial$statefulName: $statefulName? = null
+                        |) : AbstractStatefulInstance<$statefulName>(initial$statefulName) {
+                        |    final override fun announce(current$statefulName: $statefulName?, new$statefulName: $statefulName) {
                         |        $invocations
-                        |        current$statefulName = new$statefulName
-                        |    }
-                        |    
-                        |    fun clear() {
-                        |        current$statefulName = null
                         |    }
                         |}
                         |
@@ -41,19 +32,23 @@ class StatefulBuilder(
 
     private val invocations
         get() = buildString {
-            statefulGetters.forEach { getter ->
+            statefulGetters.forEachIndexed { index, getter ->
+                val space = if (index > 0) "        " else ""
+
                 val name = getter.name
                 append(
-                    """ |
-                        |        if (!java.util.Objects.equals(current$statefulName?.$name, new$statefulName.$name)) {
+                    """ |${space}if (!equals(current$statefulName?.$name, new$statefulName.$name)) {
                         |            ${newValue(name)}
                         |            ${bothValues(name)}
                         |            ${newStateful(name)}
                         |            ${bothStatefuls(name)}
                         |        }
-                        |
                     """.trimMargin()
                 )
+
+                if (index < statefulGetters.lastIndex) {
+                    append("\n\n")
+                }
             }
         }
 
