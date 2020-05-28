@@ -15,8 +15,7 @@ class ListenerBuilder(
     override val classSource
         get() = """     |package $classPackage
                         |
-                        |import javax.annotation.Generated
-                        |import $statefulClass
+                        |$classImports
                         |
                         |/**
                         | * Contains callbacks to be invoked on updates of each individual public property
@@ -28,6 +27,21 @@ class ListenerBuilder(
                         |}
                         |
         """.trimMargin()
+
+    private val classImports = buildString {
+        val imports = listOf(
+            "javax.annotation.Generated",
+            statefulClass
+        ).sorted()
+
+        imports.forEachIndexed { index, import ->
+            append("import $import")
+
+            if (index < imports.lastIndex) {
+                append("\n")
+            }
+        }
+    }
 
     private val functions
         get() = buildString {
