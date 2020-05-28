@@ -20,10 +20,7 @@ class StatefulBuilder(
     override val classSource
         get() = """     |package $classPackage
                         |
-                        |import dev.fanie.stateful.$abstractName
-                        |import java.util.Objects.equals
-                        |import javax.annotation.Generated
-                        |import $statefulClass
+                        |$classImports
                         |
                         |/**
                         | * Implementation of the [$abstractName] for the [$statefulName] type.
@@ -39,6 +36,23 @@ class StatefulBuilder(
                         |}
                         |
         """.trimMargin()
+
+    private val classImports = buildString {
+        val imports = listOf(
+            "dev.fanie.stateful.$abstractName",
+            statefulClass,
+            "java.util.Objects.equals",
+            "javax.annotation.Generated"
+        ).sorted()
+
+        imports.forEachIndexed { index, import ->
+            append("import $import")
+
+            if (index < imports.lastIndex) {
+                append("\n")
+            }
+        }
+    }
 
     private val invocations
         get() = buildString {

@@ -30,10 +30,10 @@ class StatefulBuilderTest {
             """
             |package pkg.stateful
             |
+            |import Cls
             |import dev.fanie.stateful.AbstractStatefulInstance
             |import java.util.Objects.equals
             |import javax.annotation.Generated
-            |import Cls
             |
             |/**
             | * Implementation of the [AbstractStatefulInstance] for the [Cls] type.
@@ -72,10 +72,10 @@ class StatefulBuilderTest {
             """
             |package pkg.stateful
             |
+            |import Cls
             |import dev.fanie.stateful.AbstractStatefulStack
             |import java.util.Objects.equals
             |import javax.annotation.Generated
-            |import Cls
             |
             |/**
             | * Implementation of the [AbstractStatefulStack] for the [Cls] type.

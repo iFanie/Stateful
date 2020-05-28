@@ -34,8 +34,8 @@ class ListenerBuilderTest {
             """
             |package pkg.stateful
             |
-            |import javax.annotation.Generated
             |import Cls
+            |import javax.annotation.Generated
             |
             |/**
             | * Contains callbacks to be invoked on updates of each individual public property
