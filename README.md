@@ -4,6 +4,7 @@ model classes.
 
 ### Example
 You have a simple Model and a View that renders the model.
+
 ```kotlin
 data class Model(
     val title: String,
@@ -20,6 +21,7 @@ class View {
 
 Instead of rendering everything on every update or checking the updates manually
 - Annotate the Model
+
 ```kotlin
 @Stateful
 data class Model( ... )
@@ -29,6 +31,7 @@ data class Model( ... )
     - A listener interface with functions that will br invoked when each individual public property
       is updated. For each property there will be 4 granular overloads of the callback, each with a
       default implementation to avoid clutter.
+
 ```kotlin
 interface StatefulModelListener {
     fun onTitleUpdated(newTitle: String) {}
@@ -40,8 +43,10 @@ interface StatefulModelListener {
     ...
 }
 ```
+
     - A wrapper class through which the new model instances will be passed and which, after diffing
       through the public properties, will invoke the listener appropriately.
+
 ```kotlin
 class StatefulModel {
     fun accept(newModel: Model) { ... }
@@ -51,6 +56,7 @@ class StatefulModel {
 
 - Implement the above interface, overriding whatever makes sense and pass all model updates through
   the Stateful wrapper class.
+
 ```kotlin
 class View : StatefulModelUpdateListener {
     private val statefulModel = StatefulModel(this)
@@ -76,8 +82,9 @@ class View : StatefulModelUpdateListener {
 ### Install
 - Configure your project to consume GitHub packages
     - Generate an access token with `read packages` permission, more details here: [GitHub Help](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-gradle-for-use-with-github-packages)
-    - Add the maven repository to your `Project` dependencies; `username` is your user ID and `password` is the key 
+    - Add the maven repository to your `Project` dependencies; `username` is your user ID and `password` is the key
       generated previously
+
 ```groovy
 allprojects {
     repositories {
@@ -92,18 +99,8 @@ allprojects {
 }
 ```
 
-- Add kapt generated classes to your `Module` sourceSets
-```groovy
-sourceSets {
-    main {
-        java {
-            srcDir "${buildDir.absolutePath}/generated/source/kaptKotlin/"
-        }
-    }
-}
-```
-
 - Add the Stateful dependencies to your `Module`
+
 ```groovy
 dependencies {
     implementation 'dev.fanie:stateful:0.1.1'
