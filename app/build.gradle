@@ -20,13 +20,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    sourceSets {
-        main {
-            java {
-                srcDir "${buildDir.absolutePath}/generated/source/kaptKotlin/"
-            }
-        }
-    }
 }
 
 dependencies {

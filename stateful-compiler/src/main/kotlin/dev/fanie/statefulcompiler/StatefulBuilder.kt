@@ -33,7 +33,7 @@ class StatefulBuilder(
                         |    private val $updateListenerName: Stateful${statefulName}Listener,
                         |    initial$statefulName: $statefulName? = null
                         |) : $abstractName<$statefulName>(initial$statefulName) {
-                        |    final override fun announce(current$statefulName: $statefulName?, new$statefulName: $statefulName) {
+                        |    override fun announce(currentInstance: $statefulName?, newInstance: $statefulName) {
                         |        $invocations
                         |    }
                         |}
@@ -47,7 +47,7 @@ class StatefulBuilder(
 
                 val name = getter.name
                 append(
-                    """ |${space}if (!equals(current$statefulName?.$name, new$statefulName.$name)) {
+                    """ |${space}if (!equals(currentInstance?.$name, newInstance.$name)) {
                         |            ${newValue(name)}
                         |            ${bothValues(name)}
                         |            ${newStateful(name)}
@@ -63,14 +63,14 @@ class StatefulBuilder(
         }
 
     private fun newValue(name: String) =
-        "$updateListenerName.on${name.capitalize()}Updated(new$statefulName.$name)"
+        "$updateListenerName.on${name.capitalize()}Updated(newInstance.$name)"
 
     private fun bothValues(name: String) =
-        "$updateListenerName.on${name.capitalize()}Updated(current$statefulName?.$name, new$statefulName.$name)"
+        "$updateListenerName.on${name.capitalize()}Updated(currentInstance?.$name, newInstance.$name)"
 
     private fun newStateful(name: String) =
-        "$updateListenerName.on${name.capitalize()}Updated(new$statefulName)"
+        "$updateListenerName.on${name.capitalize()}Updated(newInstance)"
 
     private fun bothStatefuls(name: String) =
-        "$updateListenerName.on${name.capitalize()}Updated(current$statefulName, new$statefulName)"
+        "$updateListenerName.on${name.capitalize()}Updated(currentInstance, newInstance)"
 }
