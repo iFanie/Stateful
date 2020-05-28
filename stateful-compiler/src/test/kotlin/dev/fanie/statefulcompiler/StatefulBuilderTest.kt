@@ -43,19 +43,19 @@ class StatefulBuilderTest {
             |    private val clsUpdateListener: StatefulClsListener,
             |    initialCls: Cls? = null
             |) : AbstractStatefulInstance<Cls>(initialCls) {
-            |    final override fun announce(currentCls: Cls?, newCls: Cls) {
-            |        if (!equals(currentCls?.one, newCls.one)) {
-            |            clsUpdateListener.onOneUpdated(newCls.one)
-            |            clsUpdateListener.onOneUpdated(currentCls?.one, newCls.one)
-            |            clsUpdateListener.onOneUpdated(newCls)
-            |            clsUpdateListener.onOneUpdated(currentCls, newCls)
+            |    override fun announce(currentInstance: Cls?, newInstance: Cls) {
+            |        if (!equals(currentInstance?.one, newInstance.one)) {
+            |            clsUpdateListener.onOneUpdated(newInstance.one)
+            |            clsUpdateListener.onOneUpdated(currentInstance?.one, newInstance.one)
+            |            clsUpdateListener.onOneUpdated(newInstance)
+            |            clsUpdateListener.onOneUpdated(currentInstance, newInstance)
             |        }
             |
-            |        if (!equals(currentCls?.two, newCls.two)) {
-            |            clsUpdateListener.onTwoUpdated(newCls.two)
-            |            clsUpdateListener.onTwoUpdated(currentCls?.two, newCls.two)
-            |            clsUpdateListener.onTwoUpdated(newCls)
-            |            clsUpdateListener.onTwoUpdated(currentCls, newCls)
+            |        if (!equals(currentInstance?.two, newInstance.two)) {
+            |            clsUpdateListener.onTwoUpdated(newInstance.two)
+            |            clsUpdateListener.onTwoUpdated(currentInstance?.two, newInstance.two)
+            |            clsUpdateListener.onTwoUpdated(newInstance)
+            |            clsUpdateListener.onTwoUpdated(currentInstance, newInstance)
             |        }
             |    }
             |}
@@ -85,19 +85,19 @@ class StatefulBuilderTest {
             |    private val clsUpdateListener: StatefulClsListener,
             |    initialCls: Cls? = null
             |) : AbstractStatefulStack<Cls>(initialCls) {
-            |    final override fun announce(currentCls: Cls?, newCls: Cls) {
-            |        if (!equals(currentCls?.one, newCls.one)) {
-            |            clsUpdateListener.onOneUpdated(newCls.one)
-            |            clsUpdateListener.onOneUpdated(currentCls?.one, newCls.one)
-            |            clsUpdateListener.onOneUpdated(newCls)
-            |            clsUpdateListener.onOneUpdated(currentCls, newCls)
+            |    override fun announce(currentInstance: Cls?, newInstance: Cls) {
+            |        if (!equals(currentInstance?.one, newInstance.one)) {
+            |            clsUpdateListener.onOneUpdated(newInstance.one)
+            |            clsUpdateListener.onOneUpdated(currentInstance?.one, newInstance.one)
+            |            clsUpdateListener.onOneUpdated(newInstance)
+            |            clsUpdateListener.onOneUpdated(currentInstance, newInstance)
             |        }
             |
-            |        if (!equals(currentCls?.two, newCls.two)) {
-            |            clsUpdateListener.onTwoUpdated(newCls.two)
-            |            clsUpdateListener.onTwoUpdated(currentCls?.two, newCls.two)
-            |            clsUpdateListener.onTwoUpdated(newCls)
-            |            clsUpdateListener.onTwoUpdated(currentCls, newCls)
+            |        if (!equals(currentInstance?.two, newInstance.two)) {
+            |            clsUpdateListener.onTwoUpdated(newInstance.two)
+            |            clsUpdateListener.onTwoUpdated(currentInstance?.two, newInstance.two)
+            |            clsUpdateListener.onTwoUpdated(newInstance)
+            |            clsUpdateListener.onTwoUpdated(currentInstance, newInstance)
             |        }
             |    }
             |}
