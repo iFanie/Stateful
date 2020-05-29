@@ -5,11 +5,11 @@ import dev.fanie.statefulcompiler.util.getter
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class StatefulBuilderTest {
+class WrapperBuilderTest {
     @Test
     fun `when reading the class package of a StatefulBuilder, then the result is the expected`() {
         val packageName = "test.package"
-        val result = StatefulBuilder(packageName, "irrelevant", listOf(), StatefulType.INSTANCE).classPackage
+        val result = WrapperBuilder(packageName, "irrelevant", listOf(), StatefulType.INSTANCE).classPackage
 
         assertEquals("$packageName.stateful", result)
     }
@@ -17,14 +17,14 @@ class StatefulBuilderTest {
     @Test
     fun `when reading the class name of a StatefulBuilder, then the result is the expected`() {
         val className = "TestClass"
-        val result = StatefulBuilder("irrelevant", className, listOf(), StatefulType.INSTANCE).className
+        val result = WrapperBuilder("irrelevant", className, listOf(), StatefulType.INSTANCE).className
 
         assertEquals("Stateful$className", result)
     }
 
     @Test
     fun `given type is INSTANCE, when reading the source code of a StatefulBuilder, then the result is the expected`() {
-        val result = StatefulBuilder("pkg", "Cls", listOf(getter("one"), getter("two")), StatefulType.INSTANCE).classSource
+        val result = WrapperBuilder("pkg", "Cls", listOf(getter("one"), getter("two")), StatefulType.INSTANCE).classSource
 
         assertEquals(
             """
@@ -66,7 +66,7 @@ class StatefulBuilderTest {
 
     @Test
     fun `given type is STACK, when reading the source code of a StatefulBuilder, then the result is the expected`() {
-        val result = StatefulBuilder("pkg", "Cls", listOf(getter("one"), getter("two")), StatefulType.STACK).classSource
+        val result = WrapperBuilder("pkg", "Cls", listOf(getter("one"), getter("two")), StatefulType.STACK).classSource
 
         assertEquals(
             """

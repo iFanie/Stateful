@@ -43,15 +43,57 @@ class ListenerBuilderTest {
             | */
             |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
             |interface StatefulClsListener {
+            |    /**
+            |     * Invoked on updates of the [Cls.one] property.
+            |     * @param newOne The new one to be rendered.
+            |     */
             |    fun onOneUpdated(newOne: kotlin.Int) {}
-            |    fun onOneUpdated(currentOne: kotlin.Int?, newOne: kotlin.Int) {}
-            |    fun onOneUpdated(newCls: Cls) {}
-            |    fun onOneUpdated(currentCls: Cls?, newCls: Cls) {}
             |
+            |    /**
+            |     * Invoked on updates of the [Cls.one] property.
+            |     * @param currentOne The currently rendered one, if any.
+            |     * @param newOne The new one to be rendered.
+            |     */
+            |     fun onOneUpdated(currentOne: kotlin.Int?, newOne: kotlin.Int) {}
+            |
+            |    /**
+            |     * Invoked on updates of the [Cls.one] property.
+            |     * @param newCls The new cls to be rendered.
+            |     */
+            |     fun onOneUpdated(newCls: Cls) {}
+            |
+            |    /**
+            |     * Invoked on updates of the [Cls.one] property.
+            |     * @param currentCls The currently rendered cls, if any.
+            |     * @param newCls The new cls to be rendered.
+            |     */
+            |     fun onOneUpdated(currentCls: Cls?, newCls: Cls) {}
+            |
+            |    /**
+            |     * Invoked on updates of the [Cls.two] property.
+            |     * @param newTwo The new two to be rendered.
+            |     */
             |    fun onTwoUpdated(newTwo: kotlin.Byte) {}
-            |    fun onTwoUpdated(currentTwo: kotlin.Byte?, newTwo: kotlin.Byte) {}
-            |    fun onTwoUpdated(newCls: Cls) {}
-            |    fun onTwoUpdated(currentCls: Cls?, newCls: Cls) {}
+            |
+            |    /**
+            |     * Invoked on updates of the [Cls.two] property.
+            |     * @param currentTwo The currently rendered two, if any.
+            |     * @param newTwo The new two to be rendered.
+            |     */
+            |     fun onTwoUpdated(currentTwo: kotlin.Byte?, newTwo: kotlin.Byte) {}
+            |
+            |    /**
+            |     * Invoked on updates of the [Cls.two] property.
+            |     * @param newCls The new cls to be rendered.
+            |     */
+            |     fun onTwoUpdated(newCls: Cls) {}
+            |
+            |    /**
+            |     * Invoked on updates of the [Cls.two] property.
+            |     * @param currentCls The currently rendered cls, if any.
+            |     * @param newCls The new cls to be rendered.
+            |     */
+            |     fun onTwoUpdated(currentCls: Cls?, newCls: Cls) {}
             |}
             |
         """.trimMargin(), result
