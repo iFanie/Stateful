@@ -4,7 +4,7 @@ import dev.fanie.stateful.StatefulType
 import javax.lang.model.element.ExecutableElement
 
 @Suppress("DefaultLocale")
-class StatefulBuilder(
+class WrapperBuilder(
     statefulPackage: String,
     private val statefulClass: String,
     private val statefulGetters: List<ExecutableElement>,
