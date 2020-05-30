@@ -11,7 +11,6 @@ class WrapperBuilder(
     statefulType: StatefulType
 ) : ClassBuilder {
     private val statefulName = statefulClass.replace("$statefulPackage.", "").capitalize()
-    private val updateListenerName = "${statefulName.decapitalize()}UpdateListener"
     private val abstractName =
         if (statefulType == StatefulType.INSTANCE) "AbstractStatefulInstance" else "AbstractStatefulStack"
 
@@ -27,7 +26,7 @@ class WrapperBuilder(
                         | */
                         |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
                         |class $className(
-                        |    private val $updateListenerName: Stateful${statefulName}Listener,
+                        |    private val listener: Stateful${statefulName}Listener,
                         |    initial$statefulName: $statefulName? = null
                         |) : $abstractName<$statefulName>(initial$statefulName) {
                         |    override fun announce(currentInstance: $statefulName?, newInstance: $statefulName) {
@@ -77,14 +76,14 @@ class WrapperBuilder(
         }
 
     private fun newValue(name: String) =
-        "$updateListenerName.on${name.capitalize()}Updated(newInstance.$name)"
+        "listener.on${name.capitalize()}Updated(newInstance.$name)"
 
     private fun bothValues(name: String) =
-        "$updateListenerName.on${name.capitalize()}Updated(currentInstance?.$name, newInstance.$name)"
+        "listener.on${name.capitalize()}Updated(currentInstance?.$name, newInstance.$name)"
 
     private fun newStateful(name: String) =
-        "$updateListenerName.on${name.capitalize()}Updated(newInstance)"
+        "listener.on${name.capitalize()}Updated(newInstance)"
 
     private fun bothStatefuls(name: String) =
-        "$updateListenerName.on${name.capitalize()}Updated(currentInstance, newInstance)"
+        "listener.on${name.capitalize()}Updated(currentInstance, newInstance)"
 }

@@ -40,22 +40,22 @@ class WrapperBuilderTest {
             | */
             |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
             |class StatefulCls(
-            |    private val clsUpdateListener: StatefulClsListener,
+            |    private val listener: StatefulClsListener,
             |    initialCls: Cls? = null
             |) : AbstractStatefulInstance<Cls>(initialCls) {
             |    override fun announce(currentInstance: Cls?, newInstance: Cls) {
             |        if (!equals(currentInstance?.one, newInstance.one)) {
-            |            clsUpdateListener.onOneUpdated(newInstance.one)
-            |            clsUpdateListener.onOneUpdated(currentInstance?.one, newInstance.one)
-            |            clsUpdateListener.onOneUpdated(newInstance)
-            |            clsUpdateListener.onOneUpdated(currentInstance, newInstance)
+            |            listener.onOneUpdated(newInstance.one)
+            |            listener.onOneUpdated(currentInstance?.one, newInstance.one)
+            |            listener.onOneUpdated(newInstance)
+            |            listener.onOneUpdated(currentInstance, newInstance)
             |        }
             |
             |        if (!equals(currentInstance?.two, newInstance.two)) {
-            |            clsUpdateListener.onTwoUpdated(newInstance.two)
-            |            clsUpdateListener.onTwoUpdated(currentInstance?.two, newInstance.two)
-            |            clsUpdateListener.onTwoUpdated(newInstance)
-            |            clsUpdateListener.onTwoUpdated(currentInstance, newInstance)
+            |            listener.onTwoUpdated(newInstance.two)
+            |            listener.onTwoUpdated(currentInstance?.two, newInstance.two)
+            |            listener.onTwoUpdated(newInstance)
+            |            listener.onTwoUpdated(currentInstance, newInstance)
             |        }
             |    }
             |}
@@ -82,22 +82,22 @@ class WrapperBuilderTest {
             | */
             |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
             |class StatefulCls(
-            |    private val clsUpdateListener: StatefulClsListener,
+            |    private val listener: StatefulClsListener,
             |    initialCls: Cls? = null
             |) : AbstractStatefulStack<Cls>(initialCls) {
             |    override fun announce(currentInstance: Cls?, newInstance: Cls) {
             |        if (!equals(currentInstance?.one, newInstance.one)) {
-            |            clsUpdateListener.onOneUpdated(newInstance.one)
-            |            clsUpdateListener.onOneUpdated(currentInstance?.one, newInstance.one)
-            |            clsUpdateListener.onOneUpdated(newInstance)
-            |            clsUpdateListener.onOneUpdated(currentInstance, newInstance)
+            |            listener.onOneUpdated(newInstance.one)
+            |            listener.onOneUpdated(currentInstance?.one, newInstance.one)
+            |            listener.onOneUpdated(newInstance)
+            |            listener.onOneUpdated(currentInstance, newInstance)
             |        }
             |
             |        if (!equals(currentInstance?.two, newInstance.two)) {
-            |            clsUpdateListener.onTwoUpdated(newInstance.two)
-            |            clsUpdateListener.onTwoUpdated(currentInstance?.two, newInstance.two)
-            |            clsUpdateListener.onTwoUpdated(newInstance)
-            |            clsUpdateListener.onTwoUpdated(currentInstance, newInstance)
+            |            listener.onTwoUpdated(newInstance.two)
+            |            listener.onTwoUpdated(currentInstance?.two, newInstance.two)
+            |            listener.onTwoUpdated(newInstance)
+            |            listener.onTwoUpdated(currentInstance, newInstance)
             |        }
             |    }
             |}
