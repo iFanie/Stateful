@@ -13,4 +13,4 @@ private fun propertyFromGetterName(getterName: String) =
         getterName
     }
 
-val ExecutableElement.type get() = TypeMatcher.toKotlinType(this)
+val ExecutableElement.type get() = TypeMatcher.match(this)

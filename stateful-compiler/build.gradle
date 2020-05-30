@@ -31,6 +31,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${stateful.dependencies.KOTLIN}"
     implementation "org.jetbrains.kotlin:kotlin-reflect:${stateful.dependencies.KOTLIN}"
+    implementation "dev.fanie:ktap:${stateful.dependencies.KTAP}"
     implementation project(":stateful")
     testImplementation "junit:junit:${stateful.dependencies.JUNIT}"
 }
