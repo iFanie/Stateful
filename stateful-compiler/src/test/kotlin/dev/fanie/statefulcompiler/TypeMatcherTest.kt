@@ -4,7 +4,6 @@ import dev.fanie.statefulcompiler.util.boolean
 import dev.fanie.statefulcompiler.util.byte
 import dev.fanie.statefulcompiler.util.char
 import dev.fanie.statefulcompiler.util.double
-import dev.fanie.statefulcompiler.util.executableElement
 import dev.fanie.statefulcompiler.util.float
 import dev.fanie.statefulcompiler.util.int
 import dev.fanie.statefulcompiler.util.jBoolean
@@ -20,12 +19,13 @@ import dev.fanie.statefulcompiler.util.jString
 import dev.fanie.statefulcompiler.util.list
 import dev.fanie.statefulcompiler.util.long
 import dev.fanie.statefulcompiler.util.map
+import dev.fanie.statefulcompiler.util.nonStandard
 import dev.fanie.statefulcompiler.util.set
 import dev.fanie.statefulcompiler.util.short
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class TypeMatcherTest {
+internal class TypeMatcherTest {
     @Test
     fun `when matching a boolean, then the result is the expected`() {
         val result = boolean().type
@@ -233,14 +233,14 @@ class TypeMatcherTest {
     @Test
     fun `when matching a non-standard instance, then result is the expected`() {
         val type = "TestType"
-        val result = executableElement(returnType = type, nullable = false).type
+        val result = nonStandard(returnType = type, nullable = false).type
         assertEquals(type, result)
     }
 
     @Test
     fun `when matching a non-standard nullable instance, then result is the expected`() {
         val type = "TestType"
-        val result = executableElement(returnType = type, nullable = true).type
+        val result = nonStandard(returnType = type, nullable = true).type
         assertEquals("$type?", result)
     }
 }

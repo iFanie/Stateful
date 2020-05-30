@@ -5,7 +5,7 @@ import dev.fanie.statefulcompiler.util.getter
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class WrapperBuilderTest {
+internal class WrapperBuilderTest {
     @Test
     fun `when reading the class package of a WrapperBuilder, then the result is the expected`() {
         val packageName = "test.package"

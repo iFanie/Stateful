@@ -22,6 +22,12 @@ data class AnotherModel(
 @Stateful
 data class Complex(
     val model: Model,
+    val models: List<Model>,
     val anotherModel: AnotherModel,
-    val ids: List<String>
+    val otherModels: Array<AnotherModel>,
+    val ids: List<String>,
+    val strs: Array<String>,
+    val strMatrix: Array<Array<String>>,
+    val ints: IntArray,
+    val intMatrix: Array<IntArray>
 )

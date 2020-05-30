@@ -553,35 +553,41 @@ internal fun methodElement(name: String = "test", vararg modifiers: Modifier) = 
     }
 }
 
-internal fun boolean() = executableElement("boolean", false)
-internal fun byte() = executableElement("byte", false)
-internal fun char() = executableElement("char", false)
-internal fun short() = executableElement("short", false)
-internal fun int() = executableElement("int", false)
-internal fun long() = executableElement("long", false)
-internal fun float() = executableElement("float", false)
-internal fun double() = executableElement("double", false)
+internal fun boolean() = declaredElement("boolean", false)
+internal fun byte() = declaredElement("byte", false)
+internal fun char() = declaredElement("char", false)
+internal fun short() = declaredElement("short", false)
+internal fun int() = declaredElement("int", false)
+internal fun long() = declaredElement("long", false)
+internal fun float() = declaredElement("float", false)
+internal fun double() = declaredElement("double", false)
 
-internal fun jBoolean(nullable: Boolean = false) = executableElement("java.lang.Boolean", nullable)
-internal fun jByte(nullable: Boolean = false) = executableElement("java.lang.Byte", nullable)
-internal fun jChar(nullable: Boolean = false) = executableElement("java.lang.Char", nullable)
-internal fun jShort(nullable: Boolean = false) = executableElement("java.lang.Short", nullable)
-internal fun jInt(nullable: Boolean = false) = executableElement("java.lang.Integer", nullable)
-internal fun jLong(nullable: Boolean = false) = executableElement("java.lang.Long", nullable)
-internal fun jFloat(nullable: Boolean = false) = executableElement("java.lang.Float", nullable)
-internal fun jDouble(nullable: Boolean = false) = executableElement("java.lang.Double", nullable)
-internal fun jString(nullable: Boolean = false) = executableElement("java.lang.String", nullable)
-internal fun jCharSequence(nullable: Boolean = false) = executableElement("java.lang.CharSequence", nullable)
+internal fun jBoolean(nullable: Boolean = false) = declaredElement("java.lang.Boolean", nullable)
+internal fun jByte(nullable: Boolean = false) = declaredElement("java.lang.Byte", nullable)
+internal fun jChar(nullable: Boolean = false) = declaredElement("java.lang.Char", nullable)
+internal fun jShort(nullable: Boolean = false) = declaredElement("java.lang.Short", nullable)
+internal fun jInt(nullable: Boolean = false) = declaredElement("java.lang.Integer", nullable)
+internal fun jLong(nullable: Boolean = false) = declaredElement("java.lang.Long", nullable)
+internal fun jFloat(nullable: Boolean = false) = declaredElement("java.lang.Float", nullable)
+internal fun jDouble(nullable: Boolean = false) = declaredElement("java.lang.Double", nullable)
+internal fun jString(nullable: Boolean = false) = declaredElement("java.lang.String", nullable)
+internal fun jCharSequence(nullable: Boolean = false) = declaredElement("java.lang.CharSequence", nullable)
+
+fun nonStandard(
+    returnType: String = "test",
+    nullable: Boolean = false,
+    generics: List<String> = listOf()
+) = declaredElement(returnType, nullable, generics)
 
 internal fun list(generic: String, nullable: Boolean = false) =
-    executableElement("java.util.List", nullable, listOf(generic))
+    declaredElement("java.util.List", nullable, listOf(generic))
 
-internal fun set(generic: String, nullable: Boolean = false) = executableElement("java.util.Set", nullable, listOf(generic))
+internal fun set(generic: String, nullable: Boolean = false) = declaredElement("java.util.Set", nullable, listOf(generic))
 
 internal fun map(keyGeneric: String, valGeneric: String, nullable: Boolean = false) =
-    executableElement("java.util.Map", nullable, listOf(keyGeneric, valGeneric))
+    declaredElement("java.util.Map", nullable, listOf(keyGeneric, valGeneric))
 
-internal fun executableElement(
+private fun declaredElement(
     returnType: String = "test",
     nullable: Boolean = false,
     generics: List<String> = listOf()
