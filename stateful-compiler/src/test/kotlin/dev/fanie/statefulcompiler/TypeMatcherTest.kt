@@ -17,7 +17,10 @@ import dev.fanie.statefulcompiler.util.jInt
 import dev.fanie.statefulcompiler.util.jLong
 import dev.fanie.statefulcompiler.util.jShort
 import dev.fanie.statefulcompiler.util.jString
+import dev.fanie.statefulcompiler.util.list
 import dev.fanie.statefulcompiler.util.long
+import dev.fanie.statefulcompiler.util.map
+import dev.fanie.statefulcompiler.util.set
 import dev.fanie.statefulcompiler.util.short
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -132,6 +135,24 @@ class TypeMatcherTest {
     }
 
     @Test
+    fun `when matching a List, then the result is the expected`() {
+        val result = list("java.lang.Integer").type
+        assertEquals("kotlin.collections.List<kotlin.Int>", result)
+    }
+
+    @Test
+    fun `when matching a Set, then the result is the expected`() {
+        val result = set("java.lang.String").type
+        assertEquals("kotlin.collections.Set<kotlin.String>", result)
+    }
+
+    @Test
+    fun `when matching a Map, then the result is the expected`() {
+        val result = map("java.lang.Float", "java.lang.Double").type
+        assertEquals("kotlin.collections.Map<kotlin.Float, kotlin.Double>", result)
+    }
+
+    @Test
     fun `when matching a nullable Boolean, then the result is the expected`() {
         val result = jBoolean(nullable = true).type
         assertEquals(Boolean::class.qualifiedName + "?", result)
@@ -189,6 +210,24 @@ class TypeMatcherTest {
     fun `when matching a nullable CharSequence, then the result is the expected`() {
         val result = jCharSequence(nullable = true).type
         assertEquals(CharSequence::class.qualifiedName + "?", result)
+    }
+
+    @Test
+    fun `when matching a nullable List, then the result is the expected`() {
+        val result = list("java.lang.Integer", nullable = true).type
+        assertEquals("kotlin.collections.List<kotlin.Int>?", result)
+    }
+
+    @Test
+    fun `when matching a nullable Set, then the result is the expected`() {
+        val result = set("java.lang.String", nullable = true).type
+        assertEquals("kotlin.collections.Set<kotlin.String>?", result)
+    }
+
+    @Test
+    fun `when matching a nullable Map, then the result is the expected`() {
+        val result = map("java.lang.Float", "java.lang.Double", nullable = true).type
+        assertEquals("kotlin.collections.Map<kotlin.Float, kotlin.Double>?", result)
     }
 
     @Test

@@ -1,47 +1,68 @@
 package dev.fanie.statefulcompiler
 
-import javax.lang.model.element.Element
+import dev.fanie.ktap.element.isOptional
 import javax.lang.model.element.ExecutableElement
+import javax.lang.model.type.DeclaredType
+import javax.lang.model.type.TypeKind
+import javax.lang.model.type.TypeMirror
 
 object TypeMatcher {
-    fun toKotlinType(element: ExecutableElement) =
-        match(cleanup(element.returnType.toString()), element)
+    private val typeMap = mapOf(
+        "boolean" to Boolean::class,
+        "byte" to Byte::class,
+        "char" to Char::class,
+        "short" to Short::class,
+        "int" to Int::class,
+        "long" to Long::class,
+        "float" to Float::class,
+        "double" to Double::class,
 
-    private fun match(elementType: String?, element: Element) = elementType?.let { type ->
-        when (type) {
+        "java.lang.Boolean" to Boolean::class,
+        "java.lang.Byte" to Byte::class,
+        "java.lang.Char" to Char::class,
+        "java.lang.Short" to Short::class,
+        "java.lang.Integer" to Int::class,
+        "java.lang.Long" to Long::class,
+        "java.lang.Float" to Float::class,
+        "java.lang.Double" to Double::class,
 
-            "boolean" -> Boolean::class.qualifiedName
-            "byte" -> Byte::class.qualifiedName
-            "char" -> Char::class.qualifiedName
-            "short" -> Short::class.qualifiedName
-            "int" -> Int::class.qualifiedName
-            "long" -> Long::class.qualifiedName
-            "float" -> Float::class.qualifiedName
-            "double" -> Double::class.qualifiedName
+        "java.lang.String" to String::class,
+        "java.lang.CharSequence" to CharSequence::class,
 
-            "java.lang.Boolean" -> parseNullable(Boolean::class.qualifiedName, element)
-            "java.lang.Byte" -> parseNullable(Byte::class.qualifiedName, element)
-            "java.lang.Char" -> parseNullable(Char::class.qualifiedName, element)
-            "java.lang.Short" -> parseNullable(Short::class.qualifiedName, element)
-            "java.lang.Integer" -> parseNullable(Int::class.qualifiedName, element)
-            "java.lang.Long" -> parseNullable(Long::class.qualifiedName, element)
-            "java.lang.Float" -> parseNullable(Float::class.qualifiedName, element)
-            "java.lang.Double" -> parseNullable(Double::class.qualifiedName, element)
+        "java.util.List" to List::class,
+        "java.util.Set" to Set::class,
+        "java.util.Map" to Map::class
+    )
 
-            "java.lang.String" -> parseNullable(String::class.qualifiedName, element)
-            "java.lang.CharSequence" -> parseNullable(CharSequence::class.qualifiedName, element)
+    fun match(element: ExecutableElement): String = matchType(element.returnType) + element.isOptional().delimiter
 
-            else -> parseNullable(type, element)
-
+    private fun matchType(type: TypeMirror): String {
+        if (type.kind != TypeKind.DECLARED) {
+            return matchOrSelf(type.toString())
         }
-    } ?: "kotlin.Any"
 
-    private fun cleanup(javaType: String) = javaType
-        .replace("\\s*\\([^)]*\\)\\s*".toRegex(), "")
-        .replace("?", "")
+        val declared = type as DeclaredType
+        val generics = declared.typeArguments
+        if (generics.isEmpty()) {
+            return matchOrSelf(type.toString())
+        }
 
-    private fun parseNullable(type: String?, element: Element) = type?.let { strongType ->
-        strongType + if (element.getAnnotation(org.jetbrains.annotations.NotNull::class.java) == null) "?"
-        else ""
-    } ?: "kotlin.Any"
+        val actualType = declared.toString().split('<').first()
+        val paramTypes = generics.map { matchType(it) }
+
+        return "${matchOrSelf(actualType)}<${paramTypes.concat()}>"
+    }
+
+    private fun matchOrSelf(self: String) = typeMap[self]?.qualifiedName ?: self
+
+    private fun List<String>.concat() = buildString {
+        this@concat.forEachIndexed { index, string ->
+            append(string)
+            if (index < this@concat.lastIndex) {
+                append(", ")
+            }
+        }
+    }
+
+    private val Boolean.delimiter get() = if (this) "?" else ""
 }

@@ -16,6 +16,7 @@ import javax.lang.model.element.PackageElement
 import javax.lang.model.element.TypeElement
 import javax.lang.model.element.TypeParameterElement
 import javax.lang.model.element.VariableElement
+import javax.lang.model.type.DeclaredType
 import javax.lang.model.type.TypeKind
 import javax.lang.model.type.TypeMirror
 import javax.lang.model.type.TypeVisitor
@@ -555,7 +556,19 @@ internal fun jDouble(nullable: Boolean = false) = executableElement("java.lang.D
 internal fun jString(nullable: Boolean = false) = executableElement("java.lang.String", nullable)
 internal fun jCharSequence(nullable: Boolean = false) = executableElement("java.lang.CharSequence", nullable)
 
-internal fun executableElement(returnType: String = "test", nullable: Boolean) = object : ExecutableElement {
+internal fun list(generic: String, nullable: Boolean = false) =
+    executableElement("java.util.List", nullable, listOf(generic))
+
+internal fun set(generic: String, nullable: Boolean = false) = executableElement("java.util.Set", nullable, listOf(generic))
+
+internal fun map(keyGeneric: String, valGeneric: String, nullable: Boolean = false) =
+    executableElement("java.util.Map", nullable, listOf(keyGeneric, valGeneric))
+
+internal fun executableElement(
+    returnType: String = "test",
+    nullable: Boolean = false,
+    generics: List<String> = listOf()
+) = object : ExecutableElement {
     override fun getDefaultValue(): AnnotationValue {
         wontDo()
     }
@@ -576,13 +589,45 @@ internal fun executableElement(returnType: String = "test", nullable: Boolean) =
         wontDo()
     }
 
-    override fun getReturnType(): TypeMirror = object : TypeMirror {
-        override fun getKind(): TypeKind {
-            wontDo()
-        }
+    override fun getReturnType(): TypeMirror = object : DeclaredType {
+        override fun getKind(): TypeKind = TypeKind.DECLARED
 
         override fun <R : Any?, P : Any?> accept(p0: TypeVisitor<R, P>?, p1: P): R {
             wontDo()
+        }
+
+        override fun getTypeArguments(): List<TypeMirror> = generics.map {
+            object : DeclaredType {
+                override fun getKind(): TypeKind = TypeKind.DECLARED
+
+                override fun <R : Any?, P : Any?> accept(p0: TypeVisitor<R, P>?, p1: P): R {
+                    wontDo()
+                }
+
+                override fun getTypeArguments(): List<TypeMirror> = listOf()
+
+                override fun <A : Annotation?> getAnnotationsByType(p0: Class<A>?): Array<A> {
+                    wontDo()
+                }
+
+                override fun <A : Annotation?> getAnnotation(p0: Class<A>?): A {
+                    wontDo()
+                }
+
+                override fun asElement(): Element {
+                    wontDo()
+                }
+
+                override fun getAnnotationMirrors(): MutableList<out AnnotationMirror> {
+                    wontDo()
+                }
+
+                override fun getEnclosingType(): TypeMirror {
+                    wontDo()
+                }
+
+                override fun toString(): String = it
+            }
         }
 
         override fun <A : Annotation?> getAnnotationsByType(p0: Class<A>?): Array<A> {
@@ -593,7 +638,15 @@ internal fun executableElement(returnType: String = "test", nullable: Boolean) =
             wontDo()
         }
 
+        override fun asElement(): Element {
+            wontDo()
+        }
+
         override fun getAnnotationMirrors(): MutableList<out AnnotationMirror> {
+            wontDo()
+        }
+
+        override fun getEnclosingType(): TypeMirror {
             wontDo()
         }
 
