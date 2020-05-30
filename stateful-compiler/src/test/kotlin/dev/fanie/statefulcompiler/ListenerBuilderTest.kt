@@ -6,7 +6,7 @@ import org.junit.Test
 
 class ListenerBuilderTest {
     @Test
-    fun `when reading the class package of a UpdateListenerBuilder, then the result is the expected`() {
+    fun `when reading the class package of a ListenerBuilder, then the result is the expected`() {
         val packageName = "test.package"
         val result = ListenerBuilder(packageName, "irrelevant", listOf()).classPackage
 
@@ -14,7 +14,7 @@ class ListenerBuilderTest {
     }
 
     @Test
-    fun `when reading the class name of a UpdateListenerBuilder, then the result is the expected`() {
+    fun `when reading the class name of a ListenerBuilder, then the result is the expected`() {
         val className = "TestClass"
         val result = ListenerBuilder("irrelevant", className, listOf()).className
 
@@ -22,7 +22,7 @@ class ListenerBuilderTest {
     }
 
     @Test
-    fun `when reading the source code of a UpdateListenerBuilder, then the result is the expected`() {
+    fun `when reading the source code of a ListenerBuilder, then the result is the expected`() {
         val result =
             ListenerBuilder(
                 "pkg",
