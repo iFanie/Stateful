@@ -108,8 +108,8 @@ allprojects {
 
 ```groovy
 dependencies {
-    implementation 'dev.fanie:stateful:0.1.3'
-    kapt 'dev.fanie:stateful-compiler:0.1.3'
+    implementation 'dev.fanie:stateful:0.1.6'
+    kapt 'dev.fanie:stateful-compiler:0.1.6'
 }
 ```
 
