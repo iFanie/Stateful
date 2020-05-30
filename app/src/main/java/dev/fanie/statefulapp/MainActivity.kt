@@ -2,11 +2,11 @@ package dev.fanie.statefulapp
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import dev.fanie.statefulapp.stateful.StatefulModel
 import dev.fanie.statefulapp.stateful.StatefulModelListener
+import dev.fanie.statefulapp.stateful.stateful
 
 class MainActivity : AppCompatActivity(), View, StatefulModelListener {
-    private val statefulModel = StatefulModel(this)
+    private val statefulModel by stateful()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
