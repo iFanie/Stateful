@@ -59,20 +59,34 @@ internal fun getter(name: String = "test", type: String = "test") = object : Exe
         wontDo()
     }
 
-    override fun getReturnType(): TypeMirror = object : TypeMirror {
-        override fun getKind(): TypeKind = wontDo()
+    override fun getReturnType(): TypeMirror = object : DeclaredType {
+        override fun getKind(): TypeKind = TypeKind.DECLARED
 
-        override fun <R : Any?, P : Any?> accept(p0: TypeVisitor<R, P>?, p1: P): R =
+        override fun <R : Any?, P : Any?> accept(p0: TypeVisitor<R, P>?, p1: P): R {
             wontDo()
+        }
 
-        override fun <A : Annotation?> getAnnotationsByType(p0: Class<A>?): Array<A> =
-            wontDo()
+        override fun getTypeArguments(): List<TypeMirror> = listOf()
 
-        override fun <A : Annotation?> getAnnotation(p0: Class<A>?): A =
+        override fun <A : Annotation?> getAnnotationsByType(p0: Class<A>?): Array<A> {
             wontDo()
+        }
 
-        override fun getAnnotationMirrors(): MutableList<out AnnotationMirror> =
+        override fun <A : Annotation?> getAnnotation(p0: Class<A>?): A {
             wontDo()
+        }
+
+        override fun asElement(): Element {
+            wontDo()
+        }
+
+        override fun getAnnotationMirrors(): MutableList<out AnnotationMirror> {
+            wontDo()
+        }
+
+        override fun getEnclosingType(): TypeMirror {
+            wontDo()
+        }
 
         override fun toString(): String = type
     }
@@ -113,9 +127,7 @@ internal fun getter(name: String = "test", type: String = "test") = object : Exe
         wontDo()
     }
 
-    override fun <A : Annotation?> getAnnotation(p0: Class<A>?): A {
-        wontDo()
-    }
+    override fun <A : Annotation> getAnnotation(p0: Class<A>): A? = annotation(p0.kotlin)
 
     override fun getAnnotationMirrors(): MutableList<out AnnotationMirror> {
         wontDo()
@@ -172,14 +184,14 @@ internal fun executableElement(name: String = "test", returnType: String = "test
             wontDo()
         }
 
-        override fun getReturnType(): TypeMirror = object : TypeMirror {
-            override fun getKind(): TypeKind {
-                wontDo()
-            }
+        override fun getReturnType(): TypeMirror = object : DeclaredType {
+            override fun getKind(): TypeKind = TypeKind.DECLARED
 
             override fun <R : Any?, P : Any?> accept(p0: TypeVisitor<R, P>?, p1: P): R {
                 wontDo()
             }
+
+            override fun getTypeArguments(): List<TypeMirror> = listOf()
 
             override fun <A : Annotation?> getAnnotationsByType(p0: Class<A>?): Array<A> {
                 wontDo()
@@ -189,7 +201,15 @@ internal fun executableElement(name: String = "test", returnType: String = "test
                 wontDo()
             }
 
+            override fun asElement(): Element {
+                wontDo()
+            }
+
             override fun getAnnotationMirrors(): MutableList<out AnnotationMirror> {
+                wontDo()
+            }
+
+            override fun getEnclosingType(): TypeMirror {
                 wontDo()
             }
 
