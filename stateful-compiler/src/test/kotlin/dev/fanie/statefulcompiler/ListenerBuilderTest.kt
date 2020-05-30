@@ -4,7 +4,7 @@ import dev.fanie.statefulcompiler.util.getter
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class ListenerBuilderTest {
+internal class ListenerBuilderTest {
     @Test
     fun `when reading the class package of a ListenerBuilder, then the result is the expected`() {
         val packageName = "test.package"
