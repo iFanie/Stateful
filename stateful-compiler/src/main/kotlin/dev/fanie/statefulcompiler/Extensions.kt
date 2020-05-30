@@ -3,6 +3,7 @@ package dev.fanie.statefulcompiler
 import javax.lang.model.element.ExecutableElement
 
 val ExecutableElement.name
+    @Suppress("DefaultLocale")
     get() =
         propertyFromGetterName(this.simpleName.toString()).decapitalize()
 
