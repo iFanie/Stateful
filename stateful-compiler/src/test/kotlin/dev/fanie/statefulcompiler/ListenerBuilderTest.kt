@@ -1,7 +1,7 @@
 package dev.fanie.statefulcompiler
 
 import dev.fanie.statefulcompiler.util.getter
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class ListenerBuilderTest {
@@ -10,7 +10,7 @@ class ListenerBuilderTest {
         val packageName = "test.package"
         val result = ListenerBuilder(packageName, "irrelevant", listOf()).classPackage
 
-        Assert.assertEquals("$packageName.stateful", result)
+        assertEquals("$packageName.stateful", result)
     }
 
     @Test
@@ -18,7 +18,7 @@ class ListenerBuilderTest {
         val className = "TestClass"
         val result = ListenerBuilder("irrelevant", className, listOf()).className
 
-        Assert.assertEquals("Stateful${className}Listener", result)
+        assertEquals("Stateful${className}Listener", result)
     }
 
     @Test
@@ -30,7 +30,7 @@ class ListenerBuilderTest {
                 listOf(getter("one", "int"), getter("two", "byte"))
             ).classSource
 
-        Assert.assertEquals(
+        assertEquals(
             """
             |package pkg.stateful
             |

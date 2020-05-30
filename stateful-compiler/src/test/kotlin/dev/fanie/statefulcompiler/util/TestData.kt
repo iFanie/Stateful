@@ -2,7 +2,6 @@ package dev.fanie.statefulcompiler.util
 
 import dev.fanie.statefulcompiler.ClassBuilder
 import java.io.Writer
-import java.lang.reflect.Proxy
 import javax.lang.model.element.AnnotationMirror
 import javax.lang.model.element.AnnotationValue
 import javax.lang.model.element.Element
@@ -21,7 +20,6 @@ import javax.lang.model.type.TypeKind
 import javax.lang.model.type.TypeMirror
 import javax.lang.model.type.TypeVisitor
 import javax.lang.model.util.Elements
-import kotlin.reflect.full.createInstance
 
 internal fun getter(name: String = "test", type: String = "test") = object : ExecutableElement {
     override fun getDefaultValue(): AnnotationValue {
@@ -252,8 +250,7 @@ internal fun executableElement(name: String = "test", returnType: String = "test
             wontDo()
         }
 
-        override fun <A : Annotation?> getAnnotation(p0: Class<A>?): A? =
-            org.jetbrains.annotations.NotNull::class.createInstance() as A
+        override fun <A : Annotation> getAnnotation(p0: Class<A>): A? = annotation(p0.kotlin)
 
         override fun getAnnotationMirrors(): MutableList<out AnnotationMirror> {
             wontDo()
@@ -709,13 +706,10 @@ internal fun executableElement(
         wontDo()
     }
 
-
-    override fun <A : Annotation?> getAnnotation(p0: Class<A>?): A? =
-        if (p0?.equals(org.jetbrains.annotations.NotNull::class.java) == true && !nullable) {
-            Proxy.newProxyInstance(
-                org.jetbrains.annotations.NotNull::class.java.classLoader,
-                arrayOf(org.jetbrains.annotations.NotNull::class.java)
-            ) { _, _, _ -> wontDo() } as A
+    @Suppress("UNCHECKED_CAST")
+    override fun <A : Annotation> getAnnotation(p0: Class<A>): A? =
+        if (p0 == org.jetbrains.annotations.NotNull::class.java && !nullable) {
+            annotation(p0.kotlin) as A
         } else {
             null
         }
