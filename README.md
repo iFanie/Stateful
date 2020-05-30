@@ -58,7 +58,7 @@ class StatefulModel {
 ```
 
 #### Implement the generated interface.
-Override whatever makes sense and pass all model updates throughthe Stateful wrapper class.
+Override whatever makes sense and pass all model updates through the Stateful wrapper class.
 
 ```kotlin
 class View : StatefulModelUpdateListener {
