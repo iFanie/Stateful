@@ -2,7 +2,8 @@ package dev.fanie.statefulcompiler.util
 
 import dev.fanie.statefulcompiler.StatefulCompiler
 import java.io.Writer
-import java.util.*
+import java.lang.reflect.Proxy
+import java.util.Locale
 import javax.annotation.processing.Filer
 import javax.annotation.processing.Messager
 import javax.annotation.processing.ProcessingEnvironment
@@ -17,6 +18,7 @@ import javax.lang.model.element.TypeElement
 import javax.lang.model.util.Elements
 import javax.lang.model.util.Types
 import javax.tools.Diagnostic
+import kotlin.reflect.KClass
 
 internal fun statefulCompiler() = StatefulCompiler()
 
@@ -136,3 +138,7 @@ internal fun processingEnvironment() = object : ProcessingEnvironment {
         wontDo()
     }
 }
+
+@Suppress("UNCHECKED_CAST")
+internal fun <A : Annotation> annotation(kClass: KClass<out A>) =
+    Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), arrayOf(kClass.java)) { _, _, _ -> wontDo() } as A

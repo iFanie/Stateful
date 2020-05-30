@@ -20,17 +20,20 @@ class View {
 ```
 
 Instead of rendering everything on every update or checking the updates manually
-- Annotate the Model
+
+#### Annotate the Model.
 
 ```kotlin
 @Stateful
 data class Model( ... )
 ```
 
-- Build. For any given annotated type, the processor will generate two classes
-    - A listener interface with functions that will br invoked when each individual public property
-      is updated. For each property there will be 4 granular overloads of the callback, each with a
-      default implementation to avoid clutter.
+#### Build.
+
+For any given annotated type, the processor will generate two classes
+- A listener interface with functions that will br invoked when each individual public property
+  is updated. For each property there will be 4 granular overloads of the callback, each with a
+  default implementation to avoid clutter.
 
 ```kotlin
 interface StatefulModelListener {
@@ -44,8 +47,8 @@ interface StatefulModelListener {
 }
 ```
 
-    - A wrapper class through which the new model instances will be passed and which, after diffing
-      through the public properties, will invoke the listener appropriately.
+- A wrapper class through which the new model instances will be passed and which, after diffing
+  through the public properties, will invoke the listener appropriately.
 
 ```kotlin
 class StatefulModel {
@@ -54,8 +57,8 @@ class StatefulModel {
 }
 ```
 
-- Implement the above interface, overriding whatever makes sense and pass all model updates through
-  the Stateful wrapper class.
+#### Implement the generated interface.
+Override whatever makes sense and pass all model updates throughthe Stateful wrapper class.
 
 ```kotlin
 class View : StatefulModelUpdateListener {
@@ -71,19 +74,21 @@ class View : StatefulModelUpdateListener {
 }
 ```
 
-- The `Stateful` annotation has a `type` argument, with a default value of `StatefulType.INSTANCE`.
-    - The `INSTANCE` type caches only the current value and performs diffing of new instances with
-      the respective current.
-    - The `STACK` type holds a stack cache and allows performing a `rollback` to previous instances.
-      What that means is that upon performing a rollback, the previous instance before the current one
-      is accessed, diffing is performed with the current and the previous instance and the previous
-      instance becomes the current.
+### Stateful types
+The `Stateful` annotation has a `type` argument, with a default value of `StatefulType.INSTANCE`.
 
-### Install
-- Configure your project to consume GitHub packages
-    - Generate an access token with `read packages` permission, more details here: [GitHub Help](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-gradle-for-use-with-github-packages)
-    - Add the maven repository to your `Project` dependencies; `username` is your user ID and `password` is the key
-      generated previously
+- The `INSTANCE` type caches only the current value and performs diffing of new instances with
+  the respective current.
+- The `STACK` type holds a stack cache and allows performing a `rollback` to previous instances.
+  What that means is that upon performing a rollback, the previous instance before the current one
+  is accessed, diffing is performed with the current and the previous instance and the previous
+  instance becomes the current.
+
+### Installation
+#### Configure your project to consume GitHub packages.
+- Generate an access token with `read packages` permission, more details here: [GitHub Help](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-gradle-for-use-with-github-packages)
+- Add the maven repository to your `Project` dependencies; `username` is your user ID and `password` is the key
+  generated previously
 
 ```groovy
 allprojects {
@@ -99,16 +104,16 @@ allprojects {
 }
 ```
 
-- Add the Stateful dependencies to your `Module`
+#### Add the Stateful dependencies to your `Module`.
 
 ```groovy
 dependencies {
-    implementation 'dev.fanie:stateful:0.1.2'
-    kapt 'dev.fanie:stateful-compiler:0.1.2'
+    implementation 'dev.fanie:stateful:0.1.3'
+    kapt 'dev.fanie:stateful-compiler:0.1.3'
 }
 ```
 
-- You can use the `app` module as a reference for how the packages are accessed and used
+##### You can use the `app` module as a reference for how the packages are accessed and used.
 
 ### Licence
 ```
