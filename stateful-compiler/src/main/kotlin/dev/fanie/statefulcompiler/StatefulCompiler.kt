@@ -38,9 +38,16 @@ class StatefulCompiler : AbstractProcessor() {
                 val updateListenerBuilder = ListenerBuilder(statefulPackage, statefulClass, statefulGetters)
                 classGenerator.generate(updateListenerBuilder)
 
-                val statefulType = stateful.getAnnotation(Stateful::class.java).type
+                val annotation = stateful.getAnnotation(Stateful::class.java)
+                val statefulType = annotation.type
                 val statefulBuilder = WrapperBuilder(statefulPackage, statefulClass, statefulGetters, statefulType)
                 classGenerator.generate(statefulBuilder)
+
+                val statefulExtras = annotation.extras.toSet()
+                if (statefulExtras.isNotEmpty()) {
+                    val extrasBuilder = ExtrasBuilder(statefulPackage, statefulClass, statefulExtras)
+                    classGenerator.generate(extrasBuilder)
+                }
             }
     }
 }

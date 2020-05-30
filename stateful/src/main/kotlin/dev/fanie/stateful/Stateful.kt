@@ -8,7 +8,8 @@ package dev.fanie.stateful
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
 annotation class Stateful(
-    val type: StatefulType = StatefulType.INSTANCE
+    val type: StatefulType = StatefulType.INSTANCE,
+    val extras: Array<StatefulExtra> = []
 )
 
 /**
@@ -25,4 +26,14 @@ enum class StatefulType {
      * previously accepted instance.
      */
     STACK
+}
+
+/**
+ * Extra features that can be added to the generated code.
+ */
+enum class StatefulExtra {
+    /**
+     * Top level function for lazy delegation of the Wrapper initialization.
+     */
+    LAZY_INIT
 }
