@@ -1,7 +1,7 @@
 package dev.fanie.statefulapp
 
 import dev.fanie.stateful.Stateful
-import dev.fanie.stateful.StatefulExtra
+import dev.fanie.stateful.StatefulOptions
 import dev.fanie.stateful.StatefulType
 
 @Stateful
@@ -19,7 +19,7 @@ data class AnotherModel(
     val model: Model
 )
 
-@Stateful(extras = [StatefulExtra.NO_LAZY_INIT])
+@Stateful(options = [StatefulOptions.NO_LAZY_INIT])
 data class Complex(
     val model: Model,
     val models: List<Model>,
@@ -32,7 +32,7 @@ data class Complex(
     val intMatrix: Array<IntArray>
 )
 
-@Stateful(extras = [StatefulExtra.NON_CASCADING_LISTENER])
+@Stateful(options = [StatefulOptions.NON_CASCADING_LISTENER])
 data class Simple(
     val number: Int
 )
