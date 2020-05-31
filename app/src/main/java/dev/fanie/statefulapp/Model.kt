@@ -36,3 +36,10 @@ data class Complex(
 data class Simple(
     val number: Int
 )
+
+@Stateful(type = StatefulType.LINKED_LIST)
+data class TimeTraveller(
+    val id: String,
+    val uid: Long,
+    val name: String
+)

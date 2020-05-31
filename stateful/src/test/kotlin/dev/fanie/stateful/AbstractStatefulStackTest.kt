@@ -7,7 +7,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class StatefulStackTest {
+class AbstractStatefulStackTest {
     @Test
     fun `given an initial instance is provided, when initializing, then the initial instance is announced`() {
         val initialInstance = "test-instance"

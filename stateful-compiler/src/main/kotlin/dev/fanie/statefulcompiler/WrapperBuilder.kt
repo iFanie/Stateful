@@ -1,5 +1,11 @@
 package dev.fanie.statefulcompiler
 
+import dev.fanie.stateful.AbstractStatefulInstance
+import dev.fanie.stateful.AbstractStatefulLinkedList
+import dev.fanie.stateful.AbstractStatefulStack
+import dev.fanie.stateful.StatefulInstance
+import dev.fanie.stateful.StatefulLinkedList
+import dev.fanie.stateful.StatefulStack
 import dev.fanie.stateful.StatefulType
 import javax.lang.model.element.ExecutableElement
 
@@ -12,10 +18,17 @@ class WrapperBuilder(
     private val noLazyInit: Boolean
 ) : ClassBuilder {
     private val statefulName = statefulClass.replace("$statefulPackage.", "").capitalize()
-    private val interfaceName =
-        if (statefulType == StatefulType.INSTANCE) "StatefulInstance" else "StatefulStack"
-    private val abstractName =
-        if (statefulType == StatefulType.INSTANCE) "AbstractStatefulInstance" else "AbstractStatefulStack"
+
+    private val interfaceClass = when (statefulType) {
+        StatefulType.INSTANCE -> StatefulInstance::class
+        StatefulType.STACK -> StatefulStack::class
+        StatefulType.LINKED_LIST -> StatefulLinkedList::class
+    }
+    private val abstractClass = when (statefulType) {
+        StatefulType.INSTANCE -> AbstractStatefulInstance::class
+        StatefulType.STACK -> AbstractStatefulStack::class
+        StatefulType.LINKED_LIST -> AbstractStatefulLinkedList::class
+    }
 
     override val classPackage = "$statefulPackage.stateful"
     override val className = "Stateful$statefulName"
@@ -27,13 +40,13 @@ class WrapperBuilder(
                         |$initializers
                         |
                         |/**
-                        | * Implementation of the [$abstractName] for the [$statefulName] type.
+                        | * Implementation of the [${abstractClass.simpleName}] for the [$statefulName] type.
                         | */
                         |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
                         |class $className(
                         |    private val listener: Stateful${statefulName}Listener,
                         |    initial$statefulName: $statefulName? = null
-                        |) : $abstractName<$statefulName>(initial$statefulName) {
+                        |) : ${abstractClass.simpleName}<$statefulName>(initial$statefulName) {
                         |    override fun announce(currentInstance: $statefulName?, newInstance: $statefulName) {
                         |        $invocations
                         |    }
@@ -43,8 +56,8 @@ class WrapperBuilder(
 
     private val classImports = buildString {
         val imports = listOf(
-            "dev.fanie.stateful.$interfaceName",
-            "dev.fanie.stateful.$abstractName",
+            requireNotNull(interfaceClass.qualifiedName),
+            requireNotNull(abstractClass.qualifiedName),
             statefulClass,
             "java.util.Objects.equals",
             "javax.annotation.Generated"
@@ -72,7 +85,7 @@ class WrapperBuilder(
                         |fun ${className.decapitalize()}(
                         |    listener: Stateful${statefulName}Listener,
                         |    initial$statefulName: $statefulName? = null
-                        |) : $interfaceName<$statefulName> = $className(listener, initial$statefulName)
+                        |) : ${interfaceClass.simpleName}<$statefulName> = $className(listener, initial$statefulName)
             """.trimMargin()
         )
 

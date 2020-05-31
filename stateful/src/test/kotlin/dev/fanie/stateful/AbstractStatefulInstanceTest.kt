@@ -5,7 +5,7 @@ import dev.fanie.stateful.util.FakeStatefulInstance
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-internal class StatefulInstanceTest {
+internal class AbstractStatefulInstanceTest {
     @Test
     fun `given an initial instance is provided, when initializing, then the initial instance is announced`() {
         val initialInstance = "test-instance"
