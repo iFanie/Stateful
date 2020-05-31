@@ -32,8 +32,21 @@ internal class WrapperBuilderTest {
             |
             |import Cls
             |import dev.fanie.stateful.AbstractStatefulInstance
+            |import dev.fanie.stateful.StatefulInstance
             |import java.util.Objects.equals
             |import javax.annotation.Generated
+            |
+            |/**
+            | * Creates a new instance of the [StatefulCls] type.
+            | * @param listener The [StatefulClsListener] instance to be invoked upon updates.
+            | * @param initialCls The initial cls to be provided. Default value is {@code null}.
+            | * @return A new instance of the [StatefulCls] type.
+            | */
+            |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
+            |fun statefulCls(
+            |    listener: StatefulClsListener,
+            |    initialCls: Cls? = null
+            |) : StatefulInstance<Cls> = StatefulCls(listener, initialCls)
             |
             |/**
             | * Implementation of the [AbstractStatefulInstance] for the [Cls] type.
@@ -74,8 +87,21 @@ internal class WrapperBuilderTest {
             |
             |import Cls
             |import dev.fanie.stateful.AbstractStatefulStack
+            |import dev.fanie.stateful.StatefulStack
             |import java.util.Objects.equals
             |import javax.annotation.Generated
+            |
+            |/**
+            | * Creates a new instance of the [StatefulCls] type.
+            | * @param listener The [StatefulClsListener] instance to be invoked upon updates.
+            | * @param initialCls The initial cls to be provided. Default value is {@code null}.
+            | * @return A new instance of the [StatefulCls] type.
+            | */
+            |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
+            |fun statefulCls(
+            |    listener: StatefulClsListener,
+            |    initialCls: Cls? = null
+            |) : StatefulStack<Cls> = StatefulCls(listener, initialCls)
             |
             |/**
             | * Implementation of the [AbstractStatefulStack] for the [Cls] type.

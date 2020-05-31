@@ -11,6 +11,8 @@ class WrapperBuilder(
     statefulType: StatefulType
 ) : ClassBuilder {
     private val statefulName = statefulClass.replace("$statefulPackage.", "").capitalize()
+    private val interfaceName =
+        if (statefulType == StatefulType.INSTANCE) "StatefulInstance" else "StatefulStack"
     private val abstractName =
         if (statefulType == StatefulType.INSTANCE) "AbstractStatefulInstance" else "AbstractStatefulStack"
 
@@ -20,6 +22,8 @@ class WrapperBuilder(
         get() = """     |package $classPackage
                         |
                         |$classImports
+                        |
+                        |$initializers
                         |
                         |/**
                         | * Implementation of the [$abstractName] for the [$statefulName] type.
@@ -38,6 +42,7 @@ class WrapperBuilder(
 
     private val classImports = buildString {
         val imports = listOf(
+            "dev.fanie.stateful.$interfaceName",
             "dev.fanie.stateful.$abstractName",
             statefulClass,
             "java.util.Objects.equals",
@@ -51,6 +56,24 @@ class WrapperBuilder(
                 append("\n")
             }
         }
+    }
+
+    private val initializers = buildString {
+        append(
+            """
+                        |/**
+                        | * Creates a new instance of the [$className] type.
+                        | * @param listener The [Stateful${statefulName}Listener] instance to be invoked upon updates.
+                        | * @param initial$statefulName The initial ${statefulName.decapitalize()} to be provided. Default value is {@code null}.
+                        | * @return A new instance of the [$className] type.
+                        | */
+                        |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
+                        |fun ${className.decapitalize()}(
+                        |    listener: Stateful${statefulName}Listener,
+                        |    initial$statefulName: $statefulName? = null
+                        |) : $interfaceName<$statefulName> = $className(listener, initial$statefulName)
+        """.trimMargin()
+        )
     }
 
     private val invocations
