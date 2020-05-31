@@ -43,7 +43,8 @@ class StatefulCompiler : AbstractProcessor() {
                     statefulPackage,
                     statefulClass,
                     statefulGetters,
-                    statefulExtras.contains(StatefulOptions.NON_CASCADING_LISTENER)
+                    statefulExtras.contains(StatefulOptions.NON_CASCADING_LISTENER),
+                    statefulExtras.contains(StatefulOptions.NO_DIFFING)
                 )
                 classGenerator.generate(updateListenerBuilder)
 
@@ -53,7 +54,8 @@ class StatefulCompiler : AbstractProcessor() {
                     statefulClass,
                     statefulGetters,
                     statefulType,
-                    statefulExtras.contains(StatefulOptions.NO_LAZY_INIT)
+                    statefulExtras.contains(StatefulOptions.NO_LAZY_INIT),
+                    statefulExtras.contains(StatefulOptions.NO_DIFFING)
                 )
                 classGenerator.generate(statefulBuilder)
             }

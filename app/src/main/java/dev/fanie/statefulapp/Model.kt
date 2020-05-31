@@ -43,3 +43,8 @@ data class TimeTraveller(
     val uid: Long,
     val name: String
 )
+
+@Stateful(options = [StatefulOptions.NO_DIFFING])
+data class Effect(
+    val error: Throwable
+)

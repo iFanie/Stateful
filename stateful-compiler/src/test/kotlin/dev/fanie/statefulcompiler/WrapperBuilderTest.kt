@@ -9,7 +9,11 @@ internal class WrapperBuilderTest {
     @Test
     fun `when reading the class package of a WrapperBuilder, then the result is the expected`() {
         val packageName = "test.package"
-        val result = WrapperBuilder(packageName, "irrelevant", listOf(), StatefulType.INSTANCE, false).classPackage
+        val result = WrapperBuilder(
+            packageName, "irrelevant", listOf(), StatefulType.INSTANCE,
+            noLazyInit = false,
+            noDiffing = false
+        ).classPackage
 
         assertEquals("$packageName.stateful", result)
     }
@@ -17,7 +21,11 @@ internal class WrapperBuilderTest {
     @Test
     fun `when reading the class name of a WrapperBuilder, then the result is the expected`() {
         val className = "TestClass"
-        val result = WrapperBuilder("irrelevant", className, listOf(), StatefulType.INSTANCE, false).className
+        val result = WrapperBuilder(
+            "irrelevant", className, listOf(), StatefulType.INSTANCE,
+            noLazyInit = false,
+            noDiffing = false
+        ).className
 
         assertEquals("Stateful$className", result)
     }
@@ -25,7 +33,11 @@ internal class WrapperBuilderTest {
     @Test
     fun `given type is INSTANCE, when reading the source code of a WrapperBuilder, then the result is the expected`() {
         val result =
-            WrapperBuilder("pkg", "Cls", listOf(getter("one"), getter("two")), StatefulType.INSTANCE, false).classSource
+            WrapperBuilder(
+                "pkg", "Cls", listOf(getter("one"), getter("two")), StatefulType.INSTANCE,
+                noLazyInit = false,
+                noDiffing = false
+            ).classSource
 
         assertEquals(
             """
@@ -108,7 +120,11 @@ internal class WrapperBuilderTest {
     @Test
     fun `given type is STACK, when reading the source code of a WrapperBuilder, then the result is the expected`() {
         val result =
-            WrapperBuilder("pkg", "Cls", listOf(getter("one"), getter("two")), StatefulType.STACK, false).classSource
+            WrapperBuilder(
+                "pkg", "Cls", listOf(getter("one"), getter("two")), StatefulType.STACK,
+                noLazyInit = false,
+                noDiffing = false
+            ).classSource
 
         assertEquals(
             """
@@ -191,7 +207,11 @@ internal class WrapperBuilderTest {
     @Test
     fun `given type is LINKED_LIST, when reading the source code of a WrapperBuilder, then the result is the expected`() {
         val result =
-            WrapperBuilder("pkg", "Cls", listOf(getter("one"), getter("two")), StatefulType.LINKED_LIST, false).classSource
+            WrapperBuilder(
+                "pkg", "Cls", listOf(getter("one"), getter("two")), StatefulType.LINKED_LIST,
+                noLazyInit = false,
+                noDiffing = false
+            ).classSource
 
         assertEquals(
             """
@@ -274,7 +294,11 @@ internal class WrapperBuilderTest {
     @Test
     fun `given lazy initializers should not be built, when reading the source code of a WrapperBuilder, then the result is the expected`() {
         val result =
-            WrapperBuilder("pkg", "Cls", listOf(getter("one"), getter("two")), StatefulType.INSTANCE, true).classSource
+            WrapperBuilder(
+                "pkg", "Cls", listOf(getter("one"), getter("two")), StatefulType.INSTANCE,
+                noLazyInit = true,
+                noDiffing = false
+            ).classSource
 
         assertEquals(
             """
@@ -320,6 +344,82 @@ internal class WrapperBuilderTest {
             |            listener.onTwoUpdated(newInstance)
             |            listener.onTwoUpdated(currentInstance, newInstance)
             |        }
+            |    }
+            |}
+            |
+        """.trimMargin(), result
+        )
+    }
+
+    @Test
+    fun `given no diffing should be performed, when reading the source code of a WrapperBuilder, then the result is the expected`() {
+        val result =
+            WrapperBuilder(
+                "pkg", "Cls", listOf(getter("one"), getter("two")), StatefulType.INSTANCE,
+                noLazyInit = false,
+                noDiffing = true
+            ).classSource
+
+        assertEquals(
+            """
+            |package pkg.stateful
+            |
+            |import Cls
+            |import dev.fanie.stateful.AbstractStatefulInstance
+            |import dev.fanie.stateful.StatefulInstance
+            |import java.util.Objects.equals
+            |import javax.annotation.Generated
+            |
+            |/**
+            | * Creates a new instance of the [StatefulCls] type.
+            | * @param listener The [StatefulClsListener] instance to be invoked upon updates.
+            | * @param initialCls The initial cls to be provided. Default value is {@code null}.
+            | * @return A new instance of the [StatefulCls] type.
+            | */
+            |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
+            |fun statefulCls(
+            |    listener: StatefulClsListener,
+            |    initialCls: Cls? = null
+            |) : StatefulInstance<Cls> = StatefulCls(listener, initialCls)
+            |
+            |/**
+            | * Provides a lazy initializer for the [StatefulCls] type.
+            | * @param listener The [StatefulClsListener] instance to be invoked upon updates.
+            | * @param initialCls The initial cls to be provided. Default value is {@code null}.
+            | * @param lazyMode The [LazyThreadSafetyMode] for the instance creation. Default value is {@code LazyThreadSafetyMode.SYNCHRONIZED}.
+            | * @return A lazy initializer for the [StatefulCls] type.
+            | */
+            |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
+            |fun stateful(
+            |    listener: StatefulClsListener,
+            |    initialCls: Cls? = null,
+            |    lazyMode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED
+            |) = lazy(lazyMode) { statefulCls(listener, initialCls) }
+            |
+            |/**
+            | * Provides a lazy initializer for the [StatefulCls] type, invoking the receiving [StatefulClsListener] instance.
+            | * @param initialCls The initial  cls  to be provided. Default value is {@code null}.
+            | * @param lazyMode The [LazyThreadSafetyMode] for the instance creation. Default value is {@code LazyThreadSafetyMode.SYNCHRONIZED}.
+            | * @return A lazy initializer for the [StatefulCls] type.
+            | */
+            |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
+            |@JvmName("extensionStateful")
+            |fun StatefulClsListener.stateful(
+            |    initialCls: Cls? = null,
+            |    lazyMode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED
+            |) = stateful(this, initialCls, lazyMode)
+            |
+            |/**
+            | * Implementation of the [AbstractStatefulInstance] for the [Cls] type.
+            | */
+            |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
+            |class StatefulCls(
+            |    private val listener: StatefulClsListener,
+            |    initialCls: Cls? = null
+            |) : AbstractStatefulInstance<Cls>(initialCls) {
+            |    override fun announce(currentInstance: Cls?, newInstance: Cls) {
+            |        listener.onOne(newInstance.one)
+            |        listener.onTwo(newInstance.two)
             |    }
             |}
             |

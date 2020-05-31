@@ -15,7 +15,8 @@ class WrapperBuilder(
     private val statefulClass: String,
     private val statefulGetters: List<ExecutableElement>,
     statefulType: StatefulType,
-    private val noLazyInit: Boolean
+    private val noLazyInit: Boolean,
+    private val noDiffing: Boolean
 ) : ClassBuilder {
     private val statefulName = statefulClass.replace("$statefulPackage.", "").capitalize()
 
@@ -128,27 +129,41 @@ class WrapperBuilder(
     private val invocations
         get() = buildString {
             statefulGetters.forEachIndexed { index, getter ->
+                val name = getter.name
                 val space = if (index > 0) "        " else ""
 
-                val name = getter.name
-                append(
-                    """ |${space}if (!equals(currentInstance?.$name, newInstance.$name)) {
+                if (!noDiffing) {
+                    append(
+                        """ |${space}if (!equals(currentInstance?.$name, newInstance.$name)) {
                         |            ${newValue(name)}
                         |            ${bothValues(name)}
                         |            ${newStateful(name)}
                         |            ${bothStatefuls(name)}
                         |        }
                     """.trimMargin()
-                )
+                    )
+                } else {
+                    append(
+                        """
+                        |$space${singleValue(name)}
+                    """.trimMargin()
+                    )
+                }
 
                 if (index < statefulGetters.lastIndex) {
-                    append("\n\n")
+                    append('\n')
+                    if (!noDiffing) {
+                        append('\n')
+                    }
                 }
             }
         }
 
     private fun newValue(name: String) =
         "listener.on${name.capitalize()}Updated(newInstance.$name)"
+
+    private fun singleValue(name: String) =
+        "listener.on${name.capitalize()}(newInstance.$name)"
 
     private fun bothValues(name: String) =
         "listener.on${name.capitalize()}Updated(currentInstance?.$name, newInstance.$name)"
