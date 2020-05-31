@@ -31,3 +31,8 @@ data class Complex(
     val ints: IntArray,
     val intMatrix: Array<IntArray>
 )
+
+@Stateful(extras = [StatefulExtra.NON_CASCADING_LISTENER])
+data class Simple(
+    val number: Int
+)
