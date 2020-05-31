@@ -7,7 +7,8 @@ class ListenerBuilder(
     statefulPackage: String,
     private val statefulClass: String,
     private val statefulGetters: List<ExecutableElement>,
-    private val nonCascading: Boolean
+    private val nonCascading: Boolean,
+    private val noDiffing: Boolean
 ) : ClassBuilder {
     private val statefulName = statefulClass.replace("$statefulPackage.", "").capitalize()
 
@@ -71,13 +72,18 @@ class ListenerBuilder(
                 val initialSpace = if (index > 0) "    " else ""
 
                 append(initialSpace)
-                append(newValue(name, type))
-                append("\n\n")
-                append(bothValues(name, type))
-                append("\n\n")
-                append(newStateful(name))
-                append("\n\n")
-                append(bothStatefuls(name))
+
+                if (!noDiffing) {
+                    append(newValue(name, type))
+                    append("\n\n")
+                    append(bothValues(name, type))
+                    append("\n\n")
+                    append(newStateful(name))
+                    append("\n\n")
+                    append(bothStatefuls(name))
+                } else {
+                    append(singleValue(name, type))
+                }
 
                 if (index < statefulGetters.lastIndex) {
                     append("\n\n")
@@ -118,13 +124,17 @@ class ListenerBuilder(
                 )
 
                 append("    ")
-                append(newValue(name, type))
-                append("\n\n")
-                append(bothValues(name, type))
-                append("\n\n")
-                append(newStateful(name))
-                append("\n\n")
-                append(bothStatefuls(name))
+                if (!noDiffing) {
+                    append(newValue(name, type))
+                    append("\n\n")
+                    append(bothValues(name, type))
+                    append("\n\n")
+                    append(newStateful(name))
+                    append("\n\n")
+                    append(bothStatefuls(name))
+                } else {
+                    append(singleValue(name, type))
+                }
                 append('\n')
 
                 append('}')
@@ -140,6 +150,13 @@ class ListenerBuilder(
             |     * @param new${name.capitalize()} The new $name to be rendered.
             |     */
             |    fun on${name.capitalize()}Updated(new${name.capitalize()}: $type) {}
+            """.trimMargin()
+
+    private fun singleValue(name: String, type: String) = """/**
+            |     * Invoked on updates of the [$statefulName.$name] property.
+            |     * @param $name The $name to be rendered.
+            |     */
+            |    fun on${name.capitalize()}($name: $type) {}
             """.trimMargin()
 
     private fun bothValues(name: String, type: String) = """

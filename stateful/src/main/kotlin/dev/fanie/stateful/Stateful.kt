@@ -56,5 +56,11 @@ enum class StatefulOptions {
      * property in the annotated model, instead of separate interfaces, one for each public property of the annotated model,
      * all of which are extended by a master interface.
      */
-    NON_CASCADING_LISTENER
+    NON_CASCADING_LISTENER,
+
+    /**
+     * When applied, no diffing will be performed on the properties of the annotated model and the listener will be invoked
+     * for all the properties on every new instance received.
+     */
+    NO_DIFFING
 }

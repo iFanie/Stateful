@@ -32,7 +32,9 @@ object TypeMatcher {
 
         "java.util.List" to List::class,
         "java.util.Set" to Set::class,
-        "java.util.Map" to Map::class
+        "java.util.Map" to Map::class,
+
+        "java.lang.Throwable" to Throwable::class
     )
 
     private val primitiveArrayTypeMap = mapOf(
@@ -55,7 +57,7 @@ object TypeMatcher {
         "java.lang.Double" to DoubleArray::class
     )
 
-    fun match(element: ExecutableElement): String = matchType(element.returnType) + element.isOptional().delimiter
+    fun match(element: ExecutableElement): String = matchType(element.returnType) + element.delimiterForOptional
 
     private fun matchType(type: TypeMirror) = when (type.kind) {
         TypeKind.DECLARED -> matchDeclaredType(type as DeclaredType)
@@ -107,5 +109,5 @@ object TypeMatcher {
         }
     }
 
-    private val Boolean.delimiter get() = if (this) "?" else ""
+    private val ExecutableElement.delimiterForOptional get() = if (isOptional() && !returnType.kind.isPrimitive) "?" else ""
 }

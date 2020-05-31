@@ -8,7 +8,8 @@ internal class ListenerBuilderTest {
     @Test
     fun `when reading the class package of a ListenerBuilder, then the result is the expected`() {
         val packageName = "test.package"
-        val result = ListenerBuilder(packageName, "irrelevant", listOf(), false).classPackage
+        val result =
+            ListenerBuilder(packageName, "irrelevant", listOf(), nonCascading = false, noDiffing = false).classPackage
 
         assertEquals("$packageName.stateful", result)
     }
@@ -16,7 +17,7 @@ internal class ListenerBuilderTest {
     @Test
     fun `when reading the class name of a ListenerBuilder, then the result is the expected`() {
         val className = "TestClass"
-        val result = ListenerBuilder("irrelevant", className, listOf(), false).className
+        val result = ListenerBuilder("irrelevant", className, listOf(), nonCascading = false, noDiffing = false).className
 
         assertEquals("Stateful${className}Listener", result)
     }
@@ -28,7 +29,8 @@ internal class ListenerBuilderTest {
                 "pkg",
                 "Cls",
                 listOf(getter("one", "int"), getter("two", "byte")),
-                false
+                nonCascading = false,
+                noDiffing = false
             ).classSource
 
         assertEquals(
@@ -121,7 +123,8 @@ internal class ListenerBuilderTest {
                 "pkg",
                 "Cls",
                 listOf(getter("one", "int"), getter("two", "byte")),
-                true
+                nonCascading = true,
+                noDiffing = false
             ).classSource
 
         assertEquals(
@@ -188,6 +191,60 @@ internal class ListenerBuilderTest {
             |     * @param newCls The new cls to be rendered.
             |     */
             |     fun onTwoUpdated(currentCls: Cls?, newCls: Cls) {}
+            |}
+            |
+        """.trimMargin(), result
+        )
+    }
+
+    @Test
+    fun `given no diffing should be performed, when reading the source code of a ListenerBuilder, then the result is the expected`() {
+        val result =
+            ListenerBuilder(
+                "pkg",
+                "Cls",
+                listOf(getter("one", "int"), getter("two", "byte")),
+                nonCascading = false,
+                noDiffing = true
+            ).classSource
+
+        assertEquals(
+            """
+            |package pkg.stateful
+            |
+            |import Cls
+            |import javax.annotation.Generated
+            |
+            |/**
+            | * Contains callbacks to be invoked on updates of each individual public property
+            | * of an instance of the [Cls] type.
+            | */
+            |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
+            |interface StatefulClsListener : StatefulClsOneListener, 
+            |    StatefulClsTwoListener
+            |    
+            |/**
+            | * Contains callbacks to be invoked on updates of the [Cls.one] property.
+            | */
+            |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
+            |interface StatefulClsOneListener {
+            |    /**
+            |     * Invoked on updates of the [Cls.one] property.
+            |     * @param one The one to be rendered.
+            |     */
+            |    fun onOne(one: kotlin.Int) {}
+            |}
+            |
+            |/**
+            | * Contains callbacks to be invoked on updates of the [Cls.two] property.
+            | */
+            |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
+            |interface StatefulClsTwoListener {
+            |    /**
+            |     * Invoked on updates of the [Cls.two] property.
+            |     * @param two The two to be rendered.
+            |     */
+            |    fun onTwo(two: kotlin.Byte) {}
             |}
             |
         """.trimMargin(), result
