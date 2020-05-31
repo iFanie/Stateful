@@ -4,7 +4,7 @@ import dev.fanie.stateful.Stateful
 import dev.fanie.stateful.StatefulExtra
 import dev.fanie.stateful.StatefulType
 
-@Stateful(extras = [StatefulExtra.LAZY_INIT])
+@Stateful
 data class Model(
     val title: String,
     val titleColor: Int,
@@ -19,7 +19,7 @@ data class AnotherModel(
     val model: Model
 )
 
-@Stateful
+@Stateful(extras = [StatefulExtra.NO_LAZY_INIT])
 data class Complex(
     val model: Model,
     val models: List<Model>,
