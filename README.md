@@ -83,7 +83,9 @@ The `Stateful` annotation has a `type` argument, with a default value of `Statef
   What that means is that upon performing a rollback, the previous instance before the current one
   is accessed, diffing is performed with the current and the previous instance and the previous
   instance becomes the current.
-- The `LINKED_LIST` type holds a linked list cache allows rolling both back and forth.  
+- The `LINKED_LIST` type holds a linked list cache and allows rolling both back and forth. If a
+  new instance is accepted while being in any state other than the latest, then the newly accepted
+  istance is not announced and will only be announced when reaching it while going forth.
 
 ### Installation
 #### Configure your project to consume GitHub packages.
