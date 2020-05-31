@@ -32,7 +32,9 @@ object TypeMatcher {
 
         "java.util.List" to List::class,
         "java.util.Set" to Set::class,
-        "java.util.Map" to Map::class
+        "java.util.Map" to Map::class,
+
+        "java.lang.Throwable" to Throwable::class
     )
 
     private val primitiveArrayTypeMap = mapOf(
