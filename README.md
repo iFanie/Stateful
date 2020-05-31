@@ -83,6 +83,7 @@ The `Stateful` annotation has a `type` argument, with a default value of `Statef
   What that means is that upon performing a rollback, the previous instance before the current one
   is accessed, diffing is performed with the current and the previous instance and the previous
   instance becomes the current.
+- The `LINKED_LIST` type holds a linked list cache allows rolling both back and forth.  
 
 ### Installation
 #### Configure your project to consume GitHub packages.
@@ -108,8 +109,8 @@ allprojects {
 
 ```groovy
 dependencies {
-    implementation 'dev.fanie:stateful:0.1.8'
-    kapt 'dev.fanie:stateful-compiler:0.1.8'
+    implementation 'dev.fanie:stateful:0.2.0'
+    kapt 'dev.fanie:stateful-compiler:0.2.0'
 }
 ```
 
