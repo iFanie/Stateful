@@ -32,7 +32,13 @@ enum class StatefulType {
      * Wrapper with a stack of cached instances for performing diffing and announcing and the ability to roll back to a
      * previously accepted instance.
      */
-    STACK
+    STACK,
+
+    /**
+     * Wrapper with a linked list of cached instances for performing diffing and announcing and the ability to roll back and
+     * forth between the nodes of instances.
+     */
+    LINKED_LIST
 }
 
 /**
