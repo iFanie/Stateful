@@ -14,9 +14,9 @@ annotation class Stateful(
     val type: StatefulType = StatefulType.INSTANCE,
 
     /**
-     * The Extra features to be added to the generated code. Default value is none.
+     * Options for the generated code. Default value is none.
      */
-    val extras: Array<StatefulExtra> = []
+    val options: Array<StatefulOptions> = []
 )
 
 /**
@@ -36,11 +36,12 @@ enum class StatefulType {
 }
 
 /**
- * Extra features that can be added to the generated code.
+ * Options that can be applied for the code generation.
  */
-enum class StatefulExtra {
+enum class StatefulOptions {
     /**
-     * Top level function for lazy delegation of the Wrapper initialization.
+     * When applied, the top level functions for lazy delegation of the generated wrapper initialization will not be
+     * generated alongside the synchronous top level initializer.
      */
     NO_LAZY_INIT,
 

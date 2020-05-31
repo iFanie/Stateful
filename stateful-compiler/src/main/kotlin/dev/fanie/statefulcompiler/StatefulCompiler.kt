@@ -1,7 +1,7 @@
 package dev.fanie.statefulcompiler
 
 import dev.fanie.stateful.Stateful
-import dev.fanie.stateful.StatefulExtra
+import dev.fanie.stateful.StatefulOptions
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.Messager
 import javax.annotation.processing.ProcessingEnvironment
@@ -37,13 +37,13 @@ class StatefulCompiler : AbstractProcessor() {
                 val statefulGetters = processingUtils.getGettersOf(stateful)
 
                 val annotation = stateful.getAnnotation(Stateful::class.java)
-                val statefulExtras = annotation.extras.toSet()
+                val statefulExtras = annotation.options.toSet()
 
                 val updateListenerBuilder = ListenerBuilder(
                     statefulPackage,
                     statefulClass,
                     statefulGetters,
-                    statefulExtras.contains(StatefulExtra.NON_CASCADING_LISTENER)
+                    statefulExtras.contains(StatefulOptions.NON_CASCADING_LISTENER)
                 )
                 classGenerator.generate(updateListenerBuilder)
 
@@ -53,7 +53,7 @@ class StatefulCompiler : AbstractProcessor() {
                     statefulClass,
                     statefulGetters,
                     statefulType,
-                    statefulExtras.contains(StatefulExtra.NO_LAZY_INIT)
+                    statefulExtras.contains(StatefulOptions.NO_LAZY_INIT)
                 )
                 classGenerator.generate(statefulBuilder)
             }
