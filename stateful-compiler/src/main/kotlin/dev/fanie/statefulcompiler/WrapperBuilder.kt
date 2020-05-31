@@ -8,7 +8,8 @@ class WrapperBuilder(
     statefulPackage: String,
     private val statefulClass: String,
     private val statefulGetters: List<ExecutableElement>,
-    statefulType: StatefulType
+    statefulType: StatefulType,
+    private val noLazyInit: Boolean
 ) : ClassBuilder {
     private val statefulName = statefulClass.replace("$statefulPackage.", "").capitalize()
     private val interfaceName =
@@ -72,8 +73,43 @@ class WrapperBuilder(
                         |    listener: Stateful${statefulName}Listener,
                         |    initial$statefulName: $statefulName? = null
                         |) : $interfaceName<$statefulName> = $className(listener, initial$statefulName)
-        """.trimMargin()
+            """.trimMargin()
         )
+
+        if (!noLazyInit) {
+            append(
+                """
+                        |
+                        |
+                        |/**
+                        | * Provides a lazy initializer for the [Stateful$statefulName] type.
+                        | * @param listener The [Stateful${statefulName}Listener] instance to be invoked upon updates.
+                        | * @param initial$statefulName The initial ${statefulName.decapitalize()} to be provided. Default value is {@code null}.
+                        | * @param lazyMode The [LazyThreadSafetyMode] for the instance creation. Default value is {@code LazyThreadSafetyMode.SYNCHRONIZED}.
+                        | * @return A lazy initializer for the [Stateful$statefulName] type.
+                        | */
+                        |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
+                        |fun stateful(
+                        |    listener: Stateful${statefulName}Listener,
+                        |    initial$statefulName: ${statefulName}? = null,
+                        |    lazyMode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED
+                        |) = lazy(lazyMode) { ${className.decapitalize()}(listener, initial$statefulName) }
+                        |
+                        |/**
+                        | * Provides a lazy initializer for the [Stateful$statefulName] type, invoking the receiving [Stateful${statefulName}Listener] instance.
+                        | * @param initial$statefulName The initial  ${statefulName.decapitalize()}  to be provided. Default value is {@code null}.
+                        | * @param lazyMode The [LazyThreadSafetyMode] for the instance creation. Default value is {@code LazyThreadSafetyMode.SYNCHRONIZED}.
+                        | * @return A lazy initializer for the [Stateful$statefulName] type.
+                        | */
+                        |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
+                        |@JvmName("extensionStateful")
+                        |fun Stateful${statefulName}Listener.stateful(
+                        |    initial$statefulName: ${statefulName}? = null,
+                        |    lazyMode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED
+                        |) = stateful(this, initial$statefulName, lazyMode)
+                """.trimMargin()
+            )
+        }
     }
 
     private val invocations
