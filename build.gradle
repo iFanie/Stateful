@@ -5,8 +5,8 @@ buildscript {
     ext {
         stateful = [
                 GROUP_ID    : 'dev.fanie',
-                BUILD       : 13,
-                VERSION     : '0.1.8',
+                BUILD       : 14,
+                VERSION     : '0.2.0',
                 github      : [
                         ID : githubProperties['gpr.usr'],
                         KEY: githubProperties['gpr.key']
