@@ -42,5 +42,12 @@ enum class StatefulExtra {
     /**
      * Top level function for lazy delegation of the Wrapper initialization.
      */
-    LAZY_INIT
+    LAZY_INIT,
+
+    /**
+     * When applied, only a single listener interface will be generated containing callbacks for every single public
+     * property in the annotated model, instead of separate interfaces, one for each public property of the annotated model,
+     * all of which are extended by a master interface.
+     */
+    NON_CASCADING_LISTENER
 }

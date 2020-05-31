@@ -41,9 +41,12 @@ class ExtrasBuilder(
     private val extrasSource
         get() = buildString {
             extras.forEachIndexed { index, extra ->
-                append(extra.source)
-                if (index < extras.size - 1) {
-                    append("\n\n")
+                val extraSource = extra.source
+                if (extraSource.isNotEmpty()) {
+                    append(extra.source)
+                    if (index < extras.size - 1) {
+                        append("\n\n")
+                    }
                 }
             }
         }
@@ -51,6 +54,7 @@ class ExtrasBuilder(
     private val StatefulExtra.source
         get() = when (this) {
             StatefulExtra.LAZY_INIT -> lazyInit()
+            StatefulExtra.NON_CASCADING_LISTENER -> ""
         }
 
     private fun lazyInit() = """/**
