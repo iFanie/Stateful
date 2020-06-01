@@ -27,8 +27,8 @@ internal class ExtensionsKtTest {
     fun `when requesting the type extension, the the response is the expected`() {
         val input = executableElement(returnType = "java.lang.String")
 
-        val result = input.type
+        val result = input.type.value
 
-        assertEquals("kotlin.String", result)
+        assertEquals("String", result)
     }
 }

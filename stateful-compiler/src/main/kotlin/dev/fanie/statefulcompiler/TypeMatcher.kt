@@ -7,6 +7,40 @@ import javax.lang.model.type.DeclaredType
 import javax.lang.model.type.TypeKind
 import javax.lang.model.type.TypeMirror
 
+data class Match(val base: String, val args: List<Match> = listOf())
+
+class TypeMatch(match: Match, isOptional: Boolean) {
+    val imports = match.getImports()
+    val value = match.getValue() + if (isOptional) "?" else ""
+
+    override fun toString() = "TypeMatch(value=$value, imports=[${imports.concat()}])"
+
+    private fun Match.getImports(): List<String> = mutableListOf<String>().apply {
+        add(base)
+        args.forEach { addAll(it.getImports()) }
+    }
+
+    private fun Match.getValue(): String {
+        return buildString {
+            append(base.simpleName())
+            if (args.isNotEmpty()) {
+                append("<${args.map { it.getValue() }.concat()}>")
+            }
+        }
+    }
+
+    private fun String.simpleName() = if (contains('.')) split('.').last() else this
+
+    private fun List<String>.concat() = buildString {
+        this@concat.forEachIndexed { index, string ->
+            append(string)
+            if (index < this@concat.lastIndex) {
+                append(", ")
+            }
+        }
+    }
+}
+
 object TypeMatcher {
     private val standardTypeMap = mapOf(
         "boolean" to Boolean::class,
@@ -58,57 +92,48 @@ object TypeMatcher {
         "java.lang.Double" to DoubleArray::class
     )
 
-    fun match(element: ExecutableElement): String = matchType(element.returnType) + element.delimiterForOptional
+    fun match(element: ExecutableElement): TypeMatch = TypeMatch(matchType(element.returnType), element.isOptional())
 
     private fun matchType(type: TypeMirror) = when (type.kind) {
         TypeKind.DECLARED -> matchDeclaredType(type as DeclaredType)
         TypeKind.ARRAY -> matchArrayType(type as ArrayType)
-        else -> matchOrSelf(type.toString())
+        else -> Match(matchOrSelf(type.toString()))
     }
 
-    private fun matchDeclaredType(type: DeclaredType): String {
+    private fun matchDeclaredType(type: DeclaredType): Match {
         val generics = type.typeArguments
         if (generics.isEmpty()) {
-            return matchOrSelf(type.toString())
+            return Match(matchOrSelf(type.toString()))
         }
 
-        val actualType = type.toString().split('<').first()
+        val actualType = matchOrSelf(type.toString().split('<').first())
         val paramTypes = generics.map { matchType(it) }
 
-        return "${matchOrSelf(actualType)}<${paramTypes.concat()}>"
+        return Match(actualType, paramTypes)
     }
 
-    private fun matchArrayType(type: ArrayType): String {
+    private fun matchArrayType(type: ArrayType): Match {
         val componentType = type.componentType
 
         if (componentType.kind.isPrimitive) {
-            return primitiveArrayTypeMap[componentType.toString()]?.qualifiedName
+            val arrayType = primitiveArrayTypeMap[componentType.toString()]?.qualifiedName
                 ?: throw NoSuchElementException("Unknown primitive array: ${componentType.kind}")
+            return Match(arrayType)
         }
 
         if (componentType.kind == TypeKind.DECLARED) {
             val matchedType = matchDeclaredType(componentType as DeclaredType)
-            return primitiveArrayTypeMap[matchedType]?.qualifiedName ?: "kotlin.Array<$matchedType>"
+            return primitiveArrayTypeMap[matchedType.base]?.qualifiedName?.let { Match(it) }
+                ?: Match("kotlin.Array", listOf(matchedType))
         }
 
         if (componentType.kind == TypeKind.ARRAY) {
             val matchedType = matchArrayType(componentType as ArrayType)
-            return "kotlin.Array<$matchedType>"
+            return Match("kotlin.Array", listOf(matchedType))
         }
 
-        return matchOrSelf(componentType.toString())
+        return Match(matchOrSelf(componentType.toString()))
     }
 
     private fun matchOrSelf(self: String) = standardTypeMap[self]?.qualifiedName ?: self
-
-    private fun List<String>.concat() = buildString {
-        this@concat.forEachIndexed { index, string ->
-            append(string)
-            if (index < this@concat.lastIndex) {
-                append(", ")
-            }
-        }
-    }
-
-    private val ExecutableElement.delimiterForOptional get() = if (isOptional()) "?" else ""
 }

@@ -50,10 +50,11 @@ class ListenerBuilder(
         """.trimMargin()
 
     private val classImports = buildString {
-        val imports = listOf(
-            "javax.annotation.Generated",
-            statefulClass
-        ).sorted()
+        val imports = mutableListOf<String>().apply {
+            add("javax.annotation.Generated")
+            add(statefulClass)
+            statefulGetters.forEach { addAll(it.type.imports) }
+        }.toSet().sorted()
 
         imports.forEachIndexed { index, import ->
             append("import $import")
@@ -68,7 +69,7 @@ class ListenerBuilder(
         get() = buildString {
             statefulGetters.forEachIndexed { index, getter ->
                 val name = getter.name
-                val type = getter.type
+                val type = getter.type.value
                 val initialSpace = if (index > 0) "    " else ""
 
                 append(initialSpace)
@@ -110,7 +111,7 @@ class ListenerBuilder(
         get() = buildString {
             statefulGetters.forEachIndexed { index, getter ->
                 val name = getter.name
-                val type = getter.type
+                val type = getter.type.value
 
                 append(
                     """
