@@ -49,4 +49,20 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+    delete project(":app").buildDir
+    delete project(":stateful").buildDir
+    delete project(":stateful-compiler").buildDir
+    doLast { println("Cleaned all buildDirs.") }
+}
+
+tasks.register("updatePackages") {
+    dependsOn ":stateful:updatePackage", ":stateful-compiler:updatePackage"
+    doLast { println("Published ${stateful.VERSION} packages.") }
+}
+
+tasks.register("update") {
+    dependsOn "clean", ":app:assembleDebug", "updatePackages"
+    tasks.findByPath(":app:assembleDebug").mustRunAfter "clean"
+    tasks.findByName("updatePackages").mustRunAfter ":app:assembleDebug"
+    doLast { println("Update done.") }
 }
