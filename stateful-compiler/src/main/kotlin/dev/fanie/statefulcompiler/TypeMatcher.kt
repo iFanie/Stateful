@@ -109,5 +109,5 @@ object TypeMatcher {
         }
     }
 
-    private val ExecutableElement.delimiterForOptional get() = if (isOptional() && !returnType.kind.isPrimitive) "?" else ""
+    private val ExecutableElement.delimiterForOptional get() = if (isOptional()) "?" else ""
 }
