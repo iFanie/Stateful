@@ -39,6 +39,8 @@ internal class ListenerBuilderTest {
             |
             |import Cls
             |import javax.annotation.Generated
+            |import kotlin.Byte
+            |import kotlin.Int
             |
             |/**
             | * Contains callbacks to be invoked on updates of each individual public property
@@ -57,14 +59,14 @@ internal class ListenerBuilderTest {
             |     * Invoked on updates of the [Cls.one] property.
             |     * @param newOne The new one to be rendered.
             |     */
-            |    fun onOneUpdated(newOne: kotlin.Int) {}
+            |    fun onOneUpdated(newOne: Int) {}
             |
             |    /**
             |     * Invoked on updates of the [Cls.one] property.
             |     * @param currentOne The currently rendered one, if any.
             |     * @param newOne The new one to be rendered.
             |     */
-            |     fun onOneUpdated(currentOne: kotlin.Int?, newOne: kotlin.Int) {}
+            |     fun onOneUpdated(currentOne: Int?, newOne: Int) {}
             |
             |    /**
             |     * Invoked on updates of the [Cls.one] property.
@@ -89,14 +91,14 @@ internal class ListenerBuilderTest {
             |     * Invoked on updates of the [Cls.two] property.
             |     * @param newTwo The new two to be rendered.
             |     */
-            |    fun onTwoUpdated(newTwo: kotlin.Byte) {}
+            |    fun onTwoUpdated(newTwo: Byte) {}
             |
             |    /**
             |     * Invoked on updates of the [Cls.two] property.
             |     * @param currentTwo The currently rendered two, if any.
             |     * @param newTwo The new two to be rendered.
             |     */
-            |     fun onTwoUpdated(currentTwo: kotlin.Byte?, newTwo: kotlin.Byte) {}
+            |     fun onTwoUpdated(currentTwo: Byte?, newTwo: Byte) {}
             |
             |    /**
             |     * Invoked on updates of the [Cls.two] property.
@@ -133,6 +135,8 @@ internal class ListenerBuilderTest {
             |
             |import Cls
             |import javax.annotation.Generated
+            |import kotlin.Byte
+            |import kotlin.Int
             |
             |/**
             | * Contains callbacks to be invoked on updates of each individual public property
@@ -144,14 +148,14 @@ internal class ListenerBuilderTest {
             |     * Invoked on updates of the [Cls.one] property.
             |     * @param newOne The new one to be rendered.
             |     */
-            |    fun onOneUpdated(newOne: kotlin.Int) {}
+            |    fun onOneUpdated(newOne: Int) {}
             |
             |    /**
             |     * Invoked on updates of the [Cls.one] property.
             |     * @param currentOne The currently rendered one, if any.
             |     * @param newOne The new one to be rendered.
             |     */
-            |     fun onOneUpdated(currentOne: kotlin.Int?, newOne: kotlin.Int) {}
+            |     fun onOneUpdated(currentOne: Int?, newOne: Int) {}
             |
             |    /**
             |     * Invoked on updates of the [Cls.one] property.
@@ -170,14 +174,14 @@ internal class ListenerBuilderTest {
             |     * Invoked on updates of the [Cls.two] property.
             |     * @param newTwo The new two to be rendered.
             |     */
-            |    fun onTwoUpdated(newTwo: kotlin.Byte) {}
+            |    fun onTwoUpdated(newTwo: Byte) {}
             |
             |    /**
             |     * Invoked on updates of the [Cls.two] property.
             |     * @param currentTwo The currently rendered two, if any.
             |     * @param newTwo The new two to be rendered.
             |     */
-            |     fun onTwoUpdated(currentTwo: kotlin.Byte?, newTwo: kotlin.Byte) {}
+            |     fun onTwoUpdated(currentTwo: Byte?, newTwo: Byte) {}
             |
             |    /**
             |     * Invoked on updates of the [Cls.two] property.
@@ -214,6 +218,8 @@ internal class ListenerBuilderTest {
             |
             |import Cls
             |import javax.annotation.Generated
+            |import kotlin.Byte
+            |import kotlin.Int
             |
             |/**
             | * Contains callbacks to be invoked on updates of each individual public property
@@ -232,7 +238,7 @@ internal class ListenerBuilderTest {
             |     * Invoked on updates of the [Cls.one] property.
             |     * @param one The one to be rendered.
             |     */
-            |    fun onOne(one: kotlin.Int) {}
+            |    fun onOne(one: Int) {}
             |}
             |
             |/**
@@ -244,7 +250,7 @@ internal class ListenerBuilderTest {
             |     * Invoked on updates of the [Cls.two] property.
             |     * @param two The two to be rendered.
             |     */
-            |    fun onTwo(two: kotlin.Byte) {}
+            |    fun onTwo(two: Byte) {}
             |}
             |
         """.trimMargin(), result
