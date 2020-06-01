@@ -87,6 +87,16 @@ The `Stateful` annotation has a `type` argument, with a default value of `Statef
   new instance is accepted while being in any state other than the latest, then the newly accepted
   istance is not announced and will only be announced when reaching it while going forth.
 
+### Stateful options
+The `Stateful` annotation has an `options` array argument, with an empty default value.
+
+- When the `NO_LAZY_INIT` option is applied, the top level functions for lazy delegation of the 
+  generated wrapper initialization will not be generated.
+- When the `NON_CASCADING_LISTENER` option is applied, only a single listener interface will be 
+  generated containing callbacks for every single public property in the annotated model.
+- When the `NO_DIFFING` option is applied, no diffing will be performed on the properties of the 
+  annotated model and the listener will be invoked on every new instance received.
+
 ### Installation
 #### Configure your project to consume GitHub packages.
 - Generate an access token with `read packages` permission, more details here: [GitHub Help](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-gradle-for-use-with-github-packages)
@@ -111,8 +121,8 @@ allprojects {
 
 ```groovy
 dependencies {
-    implementation 'dev.fanie:stateful:0.2.1'
-    kapt 'dev.fanie:stateful-compiler:0.2.1'
+    implementation 'dev.fanie:stateful:0.2.3'
+    kapt 'dev.fanie:stateful-compiler:0.2.3'
 }
 ```
 
