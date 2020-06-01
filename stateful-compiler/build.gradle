@@ -68,3 +68,8 @@ dependencies {
     implementation project(":stateful")
     testImplementation "junit:junit:${stateful.dependencies.JUNIT}"
 }
+
+tasks.register("updatePackage") {
+    dependsOn ":stateful-compiler:build", ":stateful-compiler:publish"
+    tasks.findByPath(":stateful-compiler:publish").mustRunAfter ":stateful-compiler:build"
+}

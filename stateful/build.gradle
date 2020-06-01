@@ -62,3 +62,8 @@ dependencies {
     api "javax.annotation:javax.annotation-api:${stateful.dependencies.JAVAX_ANNOTATIONS}"
     testImplementation "junit:junit:${stateful.dependencies.JUNIT}"
 }
+
+tasks.register("updatePackage") {
+    dependsOn ":stateful:build", ":stateful:publish"
+    tasks.findByPath(":stateful:publish").mustRunAfter ":stateful:build"
+}
