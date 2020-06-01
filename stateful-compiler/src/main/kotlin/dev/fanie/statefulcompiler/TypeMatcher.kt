@@ -34,7 +34,8 @@ object TypeMatcher {
         "java.util.Set" to Set::class,
         "java.util.Map" to Map::class,
 
-        "java.lang.Throwable" to Throwable::class
+        "java.lang.Throwable" to Throwable::class,
+        "java.lang.Exception" to Exception::class
     )
 
     private val primitiveArrayTypeMap = mapOf(
@@ -109,5 +110,5 @@ object TypeMatcher {
         }
     }
 
-    private val ExecutableElement.delimiterForOptional get() = if (isOptional() && !returnType.kind.isPrimitive) "?" else ""
+    private val ExecutableElement.delimiterForOptional get() = if (isOptional()) "?" else ""
 }
