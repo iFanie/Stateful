@@ -573,6 +573,9 @@ internal fun jDouble(nullable: Boolean = false) = declaredElement("java.lang.Dou
 internal fun jString(nullable: Boolean = false) = declaredElement("java.lang.String", nullable)
 internal fun jCharSequence(nullable: Boolean = false) = declaredElement("java.lang.CharSequence", nullable)
 
+internal fun throwable(nullable: Boolean = false) = declaredElement("java.lang.Throwable", nullable)
+internal fun exception(nullable: Boolean = false) = declaredElement("java.lang.Exception", nullable)
+
 fun nonStandard(
     returnType: String = "test",
     nullable: Boolean = false,

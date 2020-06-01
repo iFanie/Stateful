@@ -4,6 +4,7 @@ import dev.fanie.statefulcompiler.util.boolean
 import dev.fanie.statefulcompiler.util.byte
 import dev.fanie.statefulcompiler.util.char
 import dev.fanie.statefulcompiler.util.double
+import dev.fanie.statefulcompiler.util.exception
 import dev.fanie.statefulcompiler.util.float
 import dev.fanie.statefulcompiler.util.int
 import dev.fanie.statefulcompiler.util.jBoolean
@@ -22,6 +23,7 @@ import dev.fanie.statefulcompiler.util.map
 import dev.fanie.statefulcompiler.util.nonStandard
 import dev.fanie.statefulcompiler.util.set
 import dev.fanie.statefulcompiler.util.short
+import dev.fanie.statefulcompiler.util.throwable
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -210,6 +212,30 @@ internal class TypeMatcherTest {
     fun `when matching a nullable CharSequence, then the result is the expected`() {
         val result = jCharSequence(nullable = true).type
         assertEquals(CharSequence::class.qualifiedName + "?", result)
+    }
+
+    @Test
+    fun `when matching a Throwable, then the result is the expected`() {
+        val result = throwable().type
+        assertEquals(Throwable::class.qualifiedName, result)
+    }
+
+    @Test
+    fun `when matching an Exception, then the result is the expected`() {
+        val result = exception().type
+        assertEquals(Exception::class.qualifiedName, result)
+    }
+
+    @Test
+    fun `when matching a nullable Throwable, then the result is the expected`() {
+        val result = throwable(nullable = true).type
+        assertEquals(Throwable::class.qualifiedName + "?", result)
+    }
+
+    @Test
+    fun `when matching a nullable Exception, then the result is the expected`() {
+        val result = exception(nullable = true).type
+        assertEquals(Exception::class.qualifiedName + "?", result)
     }
 
     @Test
