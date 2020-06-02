@@ -62,7 +62,7 @@ Override whatever makes sense and pass all model updates through the Stateful wr
 
 ```kotlin
 class View : StatefulModelUpdateListener {
-    private val statefulModel = StatefulModel(this)
+    private val statefulModel by stateful()
 
     fun render(model: Model) {
         statefulModel.accept(model)
