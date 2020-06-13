@@ -47,6 +47,16 @@ allprojects {
     }
 }
 
+subprojects {
+    afterEvaluate {
+        if (!it.hasProperty("android")) {
+            dependencies {
+                implementation fileTree(dir: 'libs', include: ['*.jar'])
+            }
+        }
+    }
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
     delete project(":app").buildDir
