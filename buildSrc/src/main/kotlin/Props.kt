@@ -3,10 +3,20 @@ import java.io.FileInputStream
 import java.util.Properties
 
 object Props {
+    object Local {
+        private val localProperties: Properties by lazy {
+            val properties = Properties()
+            properties.load(FileInputStream(File("local.properties")))
+            properties
+        }
+
+        val DEV_MODE: Boolean = localProperties["dev.mode"] as? Boolean ?: false
+    }
+
     object GitHub {
         private val githubProperties: Properties by lazy {
             val properties = Properties()
-            properties.load(FileInputStream(File( "github.properties")))
+            properties.load(FileInputStream(File("github.properties")))
             properties
         }
 

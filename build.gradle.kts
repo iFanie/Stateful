@@ -26,10 +26,8 @@ allprojects {
 
 subprojects {
     afterEvaluate {
-        if (!hasProperty("android")) {
-            dependencies {
-                add("implementation", (fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar")))))
-            }
+        dependencies {
+            add("implementation", (fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar")))))
         }
     }
 }
