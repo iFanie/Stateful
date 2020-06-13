@@ -20,7 +20,7 @@ fun DependencyHandler.testImplementation(dependency: TestImplementationDependenc
 fun DependencyHandler.api(dependency: ApiDependency): Dependency? = add("api", dependency.asMap())
 
 fun Node.addDependency(dep: Dependency, scope: String) {
-    if (dep.group != null && dep.version != null && dep.name != "unspecified") {
+    if (dep.group != null && dep.version != null && dep.version != "unspecified" && dep.name != "unspecified") {
         val dependencyNode = appendNode("dependency").apply {
             appendNode("groupId", dep.group)
             appendNode("artifactId", dep.name)
