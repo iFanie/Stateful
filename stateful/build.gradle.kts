@@ -10,9 +10,9 @@ java {
 }
 
 dependencies {
-    implementation(Dependencies.Kotlin.STDLIB)
-    api(Dependencies.Compilation.JAVAX_ANNOTATIONS)
-    testImplementation(Dependencies.Testing.JUNIT)
+    include(implementation = Dependencies.Kotlin.STDLIB)
+    include(api = Dependencies.Compilation.JAVAX_ANNOTATIONS)
+    include(testImplementation = Dependencies.Testing.JUNIT)
 }
 
 tasks.register("updatePackage") {

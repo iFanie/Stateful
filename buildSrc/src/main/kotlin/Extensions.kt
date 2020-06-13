@@ -5,19 +5,23 @@ import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.plugin.use.PluginDependenciesSpec
 import org.gradle.plugin.use.PluginDependencySpec
 import type.ApiDependency
+import type.ClasspathDependency
 import type.ImplementationDependency
 import type.Plugin
 import type.TestImplementationDependency
 
 fun PluginDependenciesSpec.apply(plugin: Plugin): PluginDependencySpec = this.id(plugin.id)
 
-fun DependencyHandler.implementation(dependency: ImplementationDependency): Dependency? =
-    add("implementation", dependency.asMap())
+fun DependencyHandler.include(classpath: ClasspathDependency): Dependency? =
+    add("classpath", classpath.asMap())
 
-fun DependencyHandler.testImplementation(dependency: TestImplementationDependency): Dependency? =
-    add("testImplementation", dependency.asMap())
+fun DependencyHandler.include(implementation: ImplementationDependency): Dependency? =
+    add("implementation", implementation.asMap())
 
-fun DependencyHandler.api(dependency: ApiDependency): Dependency? = add("api", dependency.asMap())
+fun DependencyHandler.include(testImplementation: TestImplementationDependency): Dependency? =
+    add("testImplementation", testImplementation.asMap())
+
+fun DependencyHandler.include(api: ApiDependency): Dependency? = add("api", api.asMap())
 
 fun Node.addDependency(dep: Dependency, scope: String) {
     if (dep.group != null && dep.version != null && dep.version != "unspecified" && dep.name != "unspecified") {

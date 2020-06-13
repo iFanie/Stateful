@@ -10,11 +10,11 @@ java {
 }
 
 dependencies {
-    implementation(Dependencies.Kotlin.STDLIB)
-    implementation(Dependencies.Kotlin.REFLECT)
-    implementation(Dependencies.Compilation.KTAP)
+    include(implementation = Dependencies.Kotlin.STDLIB)
+    include(implementation = Dependencies.Kotlin.REFLECT)
+    include(implementation = Dependencies.Compilation.KTAP)
     implementation(project(Modules.STATEFUL))
-    testImplementation(Dependencies.Testing.JUNIT)
+    include(testImplementation = Dependencies.Testing.JUNIT)
 }
 
 tasks.register("updatePackage") {
