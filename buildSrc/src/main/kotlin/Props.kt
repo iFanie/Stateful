@@ -10,7 +10,7 @@ object Props {
             properties
         }
 
-        val DEV_MODE: Boolean = localProperties["dev.mode"] as? Boolean ?: false
+        val DEV_MODE: Boolean = (localProperties["dev.mode"] as? String ?: "false").toBoolean()
     }
 
     object GitHub {
