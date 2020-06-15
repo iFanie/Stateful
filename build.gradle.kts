@@ -17,8 +17,8 @@ allprojects {
         maven {
             url = uri("https://maven.pkg.github.com/iFanie/Stateful")
             credentials {
-                username = Props.GitHub.ID
-                password = Props.GitHub.KEY
+                username = Properties.GitHub.ID
+                password = Properties.GitHub.KEY
             }
         }
     }
@@ -39,7 +39,7 @@ task("clean") {
 
 tasks.register("updatePackages") {
     dependsOn(setOf(":stateful:updatePackage", ":stateful-compiler:updatePackage"))
-    doLast { println("Published ${Project.VERSION} packages.") }
+    doLast { println("Published ${Project.VERSION}(${Project.BUILD}) packages.") }
 }
 
 tasks.register("update") {

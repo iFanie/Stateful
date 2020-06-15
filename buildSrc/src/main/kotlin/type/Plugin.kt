@@ -1,5 +1,3 @@
 package type
 
-inline class Plugin(
-    val id: String
-)
+inline class Plugin(val id: String)

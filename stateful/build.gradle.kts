@@ -11,6 +11,7 @@ java {
 
 dependencies {
     include(implementation = Dependencies.Kotlin.STDLIB)
+    include(api = Dependencies.Kotlin.REFLECT)
     include(api = Dependencies.Compilation.JAVAX_ANNOTATIONS)
     include(testImplementation = Dependencies.Testing.JUNIT)
 }
@@ -43,8 +44,8 @@ publishing {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/iFanie/Stateful")
             credentials {
-                username = Props.GitHub.ID
-                password = Props.GitHub.KEY
+                username = Properties.GitHub.ID
+                password = Properties.GitHub.KEY
             }
         }
     }

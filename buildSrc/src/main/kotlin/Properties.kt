@@ -1,11 +1,11 @@
 import java.io.File
 import java.io.FileInputStream
-import java.util.Properties
+import java.util.Properties as Props
 
-object Props {
+object Properties {
     object Local {
-        private val localProperties: Properties by lazy {
-            val properties = Properties()
+        private val localProperties: Props by lazy {
+            val properties = Props()
             properties.load(FileInputStream(File("local.properties")))
             properties
         }
@@ -14,8 +14,8 @@ object Props {
     }
 
     object GitHub {
-        private val githubProperties: Properties by lazy {
-            val properties = Properties()
+        private val githubProperties: Props by lazy {
+            val properties = Props()
             properties.load(FileInputStream(File("github.properties")))
             properties
         }

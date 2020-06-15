@@ -26,9 +26,9 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.2.0")
 
-    if (Props.Local.DEV_MODE) {
-        implementation(project(Modules.STATEFUL))
-        kapt(project(Modules.STATEFUL_COMPILER))
+    if (Properties.Local.DEV_MODE) {
+        include(implementation = Modules.STATEFUL)
+        include(compiler = Modules.STATEFUL_COMPILER)
     } else {
         implementation("dev.fanie:stateful:${Project.VERSION}")
         kapt("dev.fanie:stateful-compiler:${Project.VERSION}")
