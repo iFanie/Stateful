@@ -1,11 +1,15 @@
+import type.moduleDependency
+import type.ModuleDependency
+
+
 object Modules {
-    val STATEFUL = mapOf("path" to ":stateful")
-    val STATEFUL_COMPILER = mapOf("path" to ":stateful-compiler")
-    val APP = mapOf("path" to ":app")
+    val STATEFUL: ModuleDependency = moduleDependency(":stateful")
+    val STATEFUL_COMPILER = moduleDependency(":stateful-compiler")
+    val APP = moduleDependency(":app")
 
     fun getPaths() = listOf(
-        requireNotNull(STATEFUL["path"]),
-        requireNotNull(STATEFUL_COMPILER["path"]),
-        requireNotNull(APP["path"])
+        STATEFUL.path.value,
+        STATEFUL_COMPILER.path.value,
+        APP.path.value
     )
 }

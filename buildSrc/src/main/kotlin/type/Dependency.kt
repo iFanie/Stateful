@@ -1,44 +1,65 @@
 package type
 
-object FileTreeDependency {
-    fun asMap() = mapOf(
-        "dir" to "libs",
-        "include" to listOf("*.jar")
-    )
+interface DependencyScope {
+    val value: String
 }
+
+sealed class Scope : DependencyScope {
+    object CLASSPATH : Scope() {
+        override val value: String = "classpath"
+    }
+
+    object IMPLEMENTATION : Scope() {
+        override val value: String = "implementation"
+    }
+
+    @Suppress("ClassName")
+    object TEST_IMPLEMENTATION : Scope() {
+        override val value: String = "testImplementation"
+    }
+
+    object API : Scope() {
+        override val value: String = "api"
+    }
+
+    object COMPILER : Scope() {
+        override val value: String = "kapt"
+    }
+}
+
+inline class Artifact(val value: Map<String, Any>)
+
+inline class Group(val value: String)
+
+inline class Name(val value: String)
+
+inline class Version(val value: String)
+
+inline class Path(val value: String)
 
 interface Dependency {
-    val group: String
-    val name: String
-    val version: String
+    val artifact: Artifact
+}
 
-    fun asMap() = mapOf(
-        "group" to group,
-        "name" to name,
-        "version" to version
+class RemoteDependency(group: Group, name: Name, version: Version) : Dependency {
+    override val artifact: Artifact = Artifact(
+        mapOf(
+            "group" to group.value,
+            "name" to name.value,
+            "version" to version.value
+        )
     )
 }
 
-data class ClasspathDependency(
-    override val group: String,
-    override val name: String,
-    override val version: String
-) : Dependency
+fun remoteDependency(group: String, name: String, version: String) =
+    RemoteDependency(Group(group), Name(name), Version(version))
 
-data class ImplementationDependency(
-    override val group: String,
-    override val name: String,
-    override val version: String
-) : Dependency
+class ModuleDependency(val path: Path) : Dependency {
+    override val artifact: Artifact = Artifact(
+        mapOf(
+            "path" to path.value
+        )
+    )
+}
 
-data class ApiDependency(
-    override val group: String,
-    override val name: String,
-    override val version: String
-) : Dependency
-
-data class TestImplementationDependency(
-    override val group: String,
-    override val name: String,
-    override val version: String
-) : Dependency
+fun moduleDependency(path: String) = ModuleDependency(Path(path))

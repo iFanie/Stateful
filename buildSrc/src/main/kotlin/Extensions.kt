@@ -4,24 +4,47 @@ import org.gradle.api.artifacts.ModuleDependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.plugin.use.PluginDependenciesSpec
 import org.gradle.plugin.use.PluginDependencySpec
-import type.ApiDependency
-import type.ClasspathDependency
-import type.ImplementationDependency
+import type.Artifact
 import type.Plugin
-import type.TestImplementationDependency
+import type.RemoteDependency
+import type.Scope
+import type.ModuleDependency as LocalDependency
 
-fun PluginDependenciesSpec.apply(plugin: Plugin): PluginDependencySpec = this.id(plugin.id)
+fun PluginDependenciesSpec.apply(plugin: Plugin): PluginDependencySpec = id(plugin.id)
 
-fun DependencyHandler.include(classpath: ClasspathDependency): Dependency? =
-    add("classpath", classpath.asMap())
+private fun DependencyHandler.from(scope: Scope, artifact: Artifact): Dependency? =
+    add(scope.value, artifact.value)
 
-fun DependencyHandler.include(implementation: ImplementationDependency): Dependency? =
-    add("implementation", implementation.asMap())
+fun DependencyHandler.include(
+    classpath: RemoteDependency? = null,
+    implementation: RemoteDependency? = null,
+    testImplementation: RemoteDependency? = null,
+    api: RemoteDependency? = null,
+    compiler: RemoteDependency? = null
+): Dependency? = when {
+    classpath != null -> from(Scope.CLASSPATH, classpath.artifact)
+    implementation != null -> from(Scope.IMPLEMENTATION, implementation.artifact)
+    testImplementation != null -> from(Scope.TEST_IMPLEMENTATION, testImplementation.artifact)
+    api != null -> from(Scope.API, api.artifact)
+    compiler != null -> from(Scope.COMPILER, compiler.artifact)
+    else -> null
+}
 
-fun DependencyHandler.include(testImplementation: TestImplementationDependency): Dependency? =
-    add("testImplementation", testImplementation.asMap())
+private fun DependencyHandler.fromProject(scope: Scope, artifact: Artifact): Dependency? =
+    add(scope.value, project(artifact.value))
 
-fun DependencyHandler.include(api: ApiDependency): Dependency? = add("api", api.asMap())
+fun DependencyHandler.include(
+    implementation: LocalDependency? = null,
+    testImplementation: LocalDependency? = null,
+    api: LocalDependency? = null,
+    compiler: LocalDependency? = null
+): Dependency? = when {
+    implementation != null -> fromProject(Scope.IMPLEMENTATION, implementation.artifact)
+    testImplementation != null -> fromProject(Scope.TEST_IMPLEMENTATION, testImplementation.artifact)
+    api != null -> fromProject(Scope.API, api.artifact)
+    compiler != null -> fromProject(Scope.COMPILER, compiler.artifact)
+    else -> null
+}
 
 fun Node.addDependency(dep: Dependency, scope: String) {
     if (dep.group != null && dep.version != null && dep.version != "unspecified" && dep.name != "unspecified") {
