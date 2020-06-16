@@ -9,13 +9,15 @@ internal class WrapperBuilderTest {
     @Test
     fun `when reading the class package of a WrapperBuilder, then the result is the expected`() {
         val packageName = "test.package"
+        val className = "test"
         val result = WrapperBuilder(
-            packageName, "irrelevant", listOf(), StatefulType.INSTANCE,
+            packageName, className, listOf(), StatefulType.INSTANCE,
             noLazyInit = false,
-            noDiffing = false
+            noDiffing = false,
+            withListener = true
         ).classPackage
 
-        assertEquals("$packageName.stateful", result)
+        assertEquals("$packageName.stateful.$className", result)
     }
 
     @Test
@@ -24,7 +26,8 @@ internal class WrapperBuilderTest {
         val result = WrapperBuilder(
             "irrelevant", className, listOf(), StatefulType.INSTANCE,
             noLazyInit = false,
-            noDiffing = false
+            noDiffing = false,
+            withListener = true
         ).className
 
         assertEquals("Stateful$className", result)
@@ -36,18 +39,20 @@ internal class WrapperBuilderTest {
             WrapperBuilder(
                 "pkg", "Cls", listOf(getter("one"), getter("two")), StatefulType.INSTANCE,
                 noLazyInit = false,
-                noDiffing = false
+                noDiffing = false,
+                withListener = true
             ).classSource
 
         assertEquals(
             """
-            |package pkg.stateful
+            |package pkg.stateful.cls
             |
             |import Cls
             |import dev.fanie.stateful.AbstractStatefulInstance
             |import dev.fanie.stateful.StatefulInstance
             |import java.util.Objects.equals
             |import javax.annotation.Generated
+            |import test
             |
             |/**
             | * Creates a new instance of the [StatefulCls] type.
@@ -123,18 +128,20 @@ internal class WrapperBuilderTest {
             WrapperBuilder(
                 "pkg", "Cls", listOf(getter("one"), getter("two")), StatefulType.STACK,
                 noLazyInit = false,
-                noDiffing = false
+                noDiffing = false,
+                withListener = true
             ).classSource
 
         assertEquals(
             """
-            |package pkg.stateful
+            |package pkg.stateful.cls
             |
             |import Cls
             |import dev.fanie.stateful.AbstractStatefulStack
             |import dev.fanie.stateful.StatefulStack
             |import java.util.Objects.equals
             |import javax.annotation.Generated
+            |import test
             |
             |/**
             | * Creates a new instance of the [StatefulCls] type.
@@ -210,18 +217,20 @@ internal class WrapperBuilderTest {
             WrapperBuilder(
                 "pkg", "Cls", listOf(getter("one"), getter("two")), StatefulType.LINKED_LIST,
                 noLazyInit = false,
-                noDiffing = false
+                noDiffing = false,
+                withListener = true
             ).classSource
 
         assertEquals(
             """
-            |package pkg.stateful
+            |package pkg.stateful.cls
             |
             |import Cls
             |import dev.fanie.stateful.AbstractStatefulLinkedList
             |import dev.fanie.stateful.StatefulLinkedList
             |import java.util.Objects.equals
             |import javax.annotation.Generated
+            |import test
             |
             |/**
             | * Creates a new instance of the [StatefulCls] type.
@@ -297,18 +306,20 @@ internal class WrapperBuilderTest {
             WrapperBuilder(
                 "pkg", "Cls", listOf(getter("one"), getter("two")), StatefulType.INSTANCE,
                 noLazyInit = true,
-                noDiffing = false
+                noDiffing = false,
+                withListener = true
             ).classSource
 
         assertEquals(
             """
-            |package pkg.stateful
+            |package pkg.stateful.cls
             |
             |import Cls
             |import dev.fanie.stateful.AbstractStatefulInstance
             |import dev.fanie.stateful.StatefulInstance
             |import java.util.Objects.equals
             |import javax.annotation.Generated
+            |import test
             |
             |/**
             | * Creates a new instance of the [StatefulCls] type.
@@ -357,18 +368,20 @@ internal class WrapperBuilderTest {
             WrapperBuilder(
                 "pkg", "Cls", listOf(getter("one"), getter("two")), StatefulType.INSTANCE,
                 noLazyInit = false,
-                noDiffing = true
+                noDiffing = true,
+                withListener = true
             ).classSource
 
         assertEquals(
             """
-            |package pkg.stateful
+            |package pkg.stateful.cls
             |
             |import Cls
             |import dev.fanie.stateful.AbstractStatefulInstance
             |import dev.fanie.stateful.StatefulInstance
             |import java.util.Objects.equals
             |import javax.annotation.Generated
+            |import test
             |
             |/**
             | * Creates a new instance of the [StatefulCls] type.
@@ -427,4 +440,109 @@ internal class WrapperBuilderTest {
         )
     }
 
+    @Test
+    fun `given no listener should be built, when reading the source code of a WrapperBuilder, then the result is the expected`() {
+        val result =
+            WrapperBuilder(
+                "pkg", "Cls", listOf(getter("one"), getter("two")), StatefulType.INSTANCE,
+                noLazyInit = false,
+                noDiffing = false,
+                withListener = false
+            ).classSource
+
+        assertEquals(
+            """
+            |package pkg.stateful.cls
+            |
+            |import Cls
+            |import dev.fanie.stateful.AbstractStatefulInstance
+            |import dev.fanie.stateful.StatefulInstance
+            |import dev.fanie.stateful.StatefulProperty
+            |import dev.fanie.stateful.invokePropertyRenderers
+            |import java.util.Objects.equals
+            |import javax.annotation.Generated
+            |import kotlin.reflect.KClass
+            |import test
+            |
+            |/**
+            | * Creates a new instance of the [StatefulCls] type.
+            | * @param listener The [Any] instance to be invoked upon updates.
+            | * @param initialCls The initial cls to be provided. Default value is {@code null}.
+            | * @return A new instance of the [StatefulCls] type.
+            | */
+            |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
+            |fun statefulCls(
+            |    listener: Any,
+            |    initialCls: Cls? = null
+            |) : StatefulInstance<Cls> = StatefulCls(listener, initialCls)
+            |
+            |/**
+            | * Provides a lazy initializer for the [StatefulCls] type.
+            | * @param listener The [Any] instance to be invoked upon updates.
+            | * @param initialCls The initial cls to be provided. Default value is {@code null}.
+            | * @param lazyMode The [LazyThreadSafetyMode] for the instance creation. Default value is {@code LazyThreadSafetyMode.SYNCHRONIZED}.
+            | * @return A lazy initializer for the [StatefulCls] type.
+            | */
+            |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
+            |fun stateful(
+            |    listener: Any,
+            |    initialCls: Cls? = null,
+            |    lazyMode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED
+            |) = lazy(lazyMode) { statefulCls(listener, initialCls) }
+            |
+            |/**
+            | * Provides a lazy initializer for the [StatefulCls] type, invoking the receiving [StatefulClsListener] instance.
+            | * @param initialCls The initial  cls  to be provided. Default value is {@code null}.
+            | * @param lazyMode The [LazyThreadSafetyMode] for the instance creation. Default value is {@code LazyThreadSafetyMode.SYNCHRONIZED}.
+            | * @return A lazy initializer for the [StatefulCls] type.
+            | */
+            |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
+            |@JvmName("extensionStateful")
+            |fun Any.stateful(
+            |    initialCls: Cls? = null,
+            |    lazyMode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED
+            |) = stateful(this, initialCls, lazyMode)
+            |
+            |/**
+            | * Implementation of the [AbstractStatefulInstance] for the [Cls] type.
+            | */
+            |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
+            |class StatefulCls(
+            |    private val listener: Any,
+            |    initialCls: Cls? = null
+            |) : AbstractStatefulInstance<Cls>(initialCls) {
+            |    override fun announce(currentInstance: Cls?, newInstance: Cls) {
+            |        if (!equals(currentInstance?.one, newInstance.one)) {
+            |            invokePropertyRenderers(Property.ONE, listener, currentInstance, newInstance)
+            |        }
+            |
+            |        if (!equals(currentInstance?.two, newInstance.two)) {
+            |            invokePropertyRenderers(Property.TWO, listener, currentInstance, newInstance)
+            |        }
+            |    }
+            |
+            |    /**
+            |     * Enumerates the available [StatefulProperty] object implementations for the [Cls] type.
+            |     * @param Type The type of each respective property of the [Cls] type.
+            |     */
+            |    sealed class Property<Type : Any> : StatefulProperty<Type, Cls> {
+            |        object ONE : Property<test>() {
+            |            override val getter: Function1<Cls, test> = { model -> model.one }
+            |            override val type: KClass<test> = test::class
+            |            override val isOptional: Boolean = false
+            |            override val modelType: KClass<Cls> = Cls::class
+            |        }
+            |
+            |        object TWO : Property<test>() {
+            |            override val getter: Function1<Cls, test> = { model -> model.two }
+            |            override val type: KClass<test> = test::class
+            |            override val isOptional: Boolean = false
+            |            override val modelType: KClass<Cls> = Cls::class
+            |        }
+            |    }
+            |}
+            |
+        """.trimMargin(), result
+        )
+    }
 }

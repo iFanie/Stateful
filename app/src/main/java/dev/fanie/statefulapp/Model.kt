@@ -32,8 +32,13 @@ data class Complex(
     val intMatrix: Array<IntArray>
 )
 
-@Stateful(options = [StatefulOptions.NON_CASCADING_LISTENER])
+@Stateful(options = [StatefulOptions.WITH_LISTENER])
 data class Simple(
+    val number: Int
+)
+
+@Stateful(options = [StatefulOptions.WITH_NON_CASCADING_LISTENER])
+data class AnotherSimple(
     val number: Int
 )
 
