@@ -1,5 +1,5 @@
 package dev.fanie.statefulapp
 
-interface View {
+interface View<Model : Any> {
     fun render(model: Model)
 }
