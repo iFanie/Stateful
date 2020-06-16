@@ -1,15 +1,15 @@
 package dev.fanie.stateful
 
 /**
- * Decorates classes for which changes need to be monitored. The processor of this annotation will
- * generate a wrapper class for handling diffing between the previous and next instance of the class
- * and an interface for receiving updates on the changes.
+ * Decorates classes for which changes need to be monitored. The processor of this annotation will generate a wrapper class
+ * for handling diffing between the previous and next instance of the class and an interface (optional) for receiving updates
+ * on the changes.
  */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
 annotation class Stateful(
     /**
-     * The type of Stateful wrapper to be created. Default value is {@code StatefulType.INSTANCE}.
+     * The type of Stateful wrapper to be created. Default value is [StatefulType.INSTANCE].
      */
     val type: StatefulType = StatefulType.INSTANCE,
 
@@ -52,15 +52,21 @@ enum class StatefulOptions {
     NO_LAZY_INIT,
 
     /**
+     * When applied, no diffing will be performed on the properties of the annotated model and the listener will be invoked
+     * for all the properties on every new instance received.
+     */
+    NO_DIFFING,
+
+    /**
+     * When applied, separate interfaces, one for each public property of the annotated model, will be generated, all of
+     * which are extended by a master interface.
+     */
+    WITH_LISTENER,
+
+    /**
      * When applied, only a single listener interface will be generated containing callbacks for every single public
      * property in the annotated model, instead of separate interfaces, one for each public property of the annotated model,
      * all of which are extended by a master interface.
      */
-    NON_CASCADING_LISTENER,
-
-    /**
-     * When applied, no diffing will be performed on the properties of the annotated model and the listener will be invoked
-     * for all the properties on every new instance received.
-     */
-    NO_DIFFING
+    WITH_NON_CASCADING_LISTENER,
 }

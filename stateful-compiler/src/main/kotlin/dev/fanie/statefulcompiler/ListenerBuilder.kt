@@ -12,7 +12,7 @@ class ListenerBuilder(
 ) : ClassBuilder {
     private val statefulName = statefulClass.replace("$statefulPackage.", "").capitalize()
 
-    override val classPackage = "$statefulPackage.stateful"
+    override val classPackage = "$statefulPackage.stateful.${statefulName.toLowerCase()}"
     override val className = "Stateful${statefulName}Listener"
     override val classSource
         get() = if (nonCascading) nonCascadingSource() else cascadingSource()

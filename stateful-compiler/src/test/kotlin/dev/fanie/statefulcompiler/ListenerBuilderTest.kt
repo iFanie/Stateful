@@ -8,10 +8,11 @@ internal class ListenerBuilderTest {
     @Test
     fun `when reading the class package of a ListenerBuilder, then the result is the expected`() {
         val packageName = "test.package"
+        val className = "test"
         val result =
-            ListenerBuilder(packageName, "irrelevant", listOf(), nonCascading = false, noDiffing = false).classPackage
+            ListenerBuilder(packageName, className, listOf(), nonCascading = false, noDiffing = false).classPackage
 
-        assertEquals("$packageName.stateful", result)
+        assertEquals("$packageName.stateful.$className", result)
     }
 
     @Test
@@ -35,7 +36,7 @@ internal class ListenerBuilderTest {
 
         assertEquals(
             """
-            |package pkg.stateful
+            |package pkg.stateful.cls
             |
             |import Cls
             |import javax.annotation.Generated
@@ -131,7 +132,7 @@ internal class ListenerBuilderTest {
 
         assertEquals(
             """
-            |package pkg.stateful
+            |package pkg.stateful.cls
             |
             |import Cls
             |import javax.annotation.Generated
@@ -214,7 +215,7 @@ internal class ListenerBuilderTest {
 
         assertEquals(
             """
-            |package pkg.stateful
+            |package pkg.stateful.cls
             |
             |import Cls
             |import javax.annotation.Generated

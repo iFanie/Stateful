@@ -1,5 +1,6 @@
 package dev.fanie.statefulcompiler
 
+import dev.fanie.ktap.element.isOptional
 import dev.fanie.stateful.AbstractStatefulInstance
 import dev.fanie.stateful.AbstractStatefulLinkedList
 import dev.fanie.stateful.AbstractStatefulStack
@@ -16,7 +17,8 @@ class WrapperBuilder(
     private val statefulGetters: List<ExecutableElement>,
     statefulType: StatefulType,
     private val noLazyInit: Boolean,
-    private val noDiffing: Boolean
+    private val noDiffing: Boolean,
+    private val withListener: Boolean
 ) : ClassBuilder {
     private val statefulName = statefulClass.replace("$statefulPackage.", "").capitalize()
 
@@ -31,7 +33,7 @@ class WrapperBuilder(
         StatefulType.LINKED_LIST -> AbstractStatefulLinkedList::class
     }
 
-    override val classPackage = "$statefulPackage.stateful"
+    override val classPackage = "$statefulPackage.stateful.${statefulName.toLowerCase()}"
     override val className = "Stateful$statefulName"
     override val classSource
         get() = """     |package $classPackage
@@ -45,24 +47,29 @@ class WrapperBuilder(
                         | */
                         |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
                         |class $className(
-                        |    private val listener: Stateful${statefulName}Listener,
+                        |    private val listener: $listenerType,
                         |    initial$statefulName: $statefulName? = null
                         |) : ${abstractClass.simpleName}<$statefulName>(initial$statefulName) {
-                        |    override fun announce(currentInstance: $statefulName?, newInstance: $statefulName) {
-                        |        $invocations
-                        |    }
+                        |    $body
                         |}
                         |
         """.trimMargin()
 
     private val classImports = buildString {
-        val imports = listOf(
+        val imports = mutableListOf(
             requireNotNull(interfaceClass.qualifiedName),
             requireNotNull(abstractClass.qualifiedName),
             statefulClass,
             "java.util.Objects.equals",
             "javax.annotation.Generated"
-        ).sorted()
+        ).apply {
+            if (!withListener) {
+                add("dev.fanie.stateful.invokePropertyRenderers")
+                add("kotlin.reflect.KClass")
+                add("dev.fanie.stateful.StatefulProperty")
+            }
+            statefulGetters.forEach { addAll(it.type.imports) }
+        }.toSet().sorted()
 
         imports.forEachIndexed { index, import ->
             append("import $import")
@@ -73,18 +80,20 @@ class WrapperBuilder(
         }
     }
 
+    private val listenerType = if (withListener) "Stateful${statefulName}Listener" else "Any"
+
     private val initializers = buildString {
         append(
             """
                         |/**
                         | * Creates a new instance of the [$className] type.
-                        | * @param listener The [Stateful${statefulName}Listener] instance to be invoked upon updates.
+                        | * @param listener The [$listenerType] instance to be invoked upon updates.
                         | * @param initial$statefulName The initial ${statefulName.decapitalize()} to be provided. Default value is {@code null}.
                         | * @return A new instance of the [$className] type.
                         | */
                         |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
                         |fun ${className.decapitalize()}(
-                        |    listener: Stateful${statefulName}Listener,
+                        |    listener: $listenerType,
                         |    initial$statefulName: $statefulName? = null
                         |) : ${interfaceClass.simpleName}<$statefulName> = $className(listener, initial$statefulName)
             """.trimMargin()
@@ -97,14 +106,14 @@ class WrapperBuilder(
                         |
                         |/**
                         | * Provides a lazy initializer for the [Stateful$statefulName] type.
-                        | * @param listener The [Stateful${statefulName}Listener] instance to be invoked upon updates.
+                        | * @param listener The [$listenerType] instance to be invoked upon updates.
                         | * @param initial$statefulName The initial ${statefulName.decapitalize()} to be provided. Default value is {@code null}.
                         | * @param lazyMode The [LazyThreadSafetyMode] for the instance creation. Default value is {@code LazyThreadSafetyMode.SYNCHRONIZED}.
                         | * @return A lazy initializer for the [Stateful$statefulName] type.
                         | */
                         |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
                         |fun stateful(
-                        |    listener: Stateful${statefulName}Listener,
+                        |    listener: $listenerType,
                         |    initial$statefulName: ${statefulName}? = null,
                         |    lazyMode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED
                         |) = lazy(lazyMode) { ${className.decapitalize()}(listener, initial$statefulName) }
@@ -117,7 +126,7 @@ class WrapperBuilder(
                         | */
                         |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
                         |@JvmName("extensionStateful")
-                        |fun Stateful${statefulName}Listener.stateful(
+                        |fun $listenerType.stateful(
                         |    initial$statefulName: ${statefulName}? = null,
                         |    lazyMode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED
                         |) = stateful(this, initial$statefulName, lazyMode)
@@ -126,7 +135,28 @@ class WrapperBuilder(
         }
     }
 
-    private val invocations
+    private val body
+        get() = if (withListener) {
+            """override fun announce(currentInstance: $statefulName?, newInstance: $statefulName) {
+                        |        $callbackInvocations
+                        |    }
+            """.trimMargin()
+        } else {
+            """override fun announce(currentInstance: $statefulName?, newInstance: $statefulName) {
+                        |        $rendererInvocations
+                        |    }
+                        |
+                        |    /**
+                        |     * Enumerates the available [StatefulProperty] object implementations for the [$statefulName] type.
+                        |     * @param Type The type of each respective property of the [$statefulName] type.
+                        |     */
+                        |    sealed class Property<Type : Any> : StatefulProperty<Type, $statefulName> {
+                        |        $properties
+                        |    }
+            """.trimIndent()
+        }
+
+    private val callbackInvocations
         get() = buildString {
             statefulGetters.forEachIndexed { index, getter ->
                 val name = getter.name
@@ -173,4 +203,79 @@ class WrapperBuilder(
 
     private fun bothStatefuls(name: String) =
         "listener.on${name.capitalize()}Updated(currentInstance, newInstance)"
+
+    private val rendererInvocations
+        get() = buildString {
+            statefulGetters.forEachIndexed { index, getter ->
+                val name = getter.name
+                val space = if (index > 0) "        " else ""
+
+                if (!noDiffing) {
+                    append(
+                        """ |${space}if (!equals(currentInstance?.$name, newInstance.$name)) {
+                        |            invokePropertyRenderers(Property.${name.toSnakeCase()}, listener, currentInstance, newInstance)
+                        |        }
+                    """.trimMargin()
+                    )
+                } else {
+                    append(
+                        """
+                        |invokePropertyRenderers(Property.${name.toSnakeCase()}, listener, currentInstance, newInstance)
+                    """.trimMargin()
+                    )
+                }
+
+                if (index < statefulGetters.lastIndex) {
+                    append('\n')
+                    if (!noDiffing) {
+                        append('\n')
+                    }
+                }
+            }
+        }
+
+    private val properties
+        get() = buildString {
+            statefulGetters.forEachIndexed { index, getter ->
+                val name = getter.name.toSnakeCase()
+                val type = getter.type.value.replace("?", "")
+                val trueType = if (!type.startsWith("Array<")) type.split('<').first() else type
+                val space = if (index > 0) "        " else ""
+                val suppress = when {
+                    type != trueType && name.contains('_') -> "@Suppress(\"UNCHECKED_CAST\", \"ClassName\")\n        "
+                    type != trueType -> "@Suppress(\"UNCHECKED_CAST\")\n        "
+                    name.contains('_') -> "@Suppress(\"ClassName\")\n        "
+                    else -> ""
+                }
+                val cast = if (type != trueType) " as KClass<$type>" else ""
+
+                append(
+                    """
+                    |${space}${suppress}object $name : Property<$type>() {
+                    |            override val getter: Function1<$statefulName, ${getter.type.value}> = { model -> model.${getter.name} }
+                    |            override val type: KClass<$type> = $trueType::class$cast
+                    |            override val isOptional: Boolean = ${getter.isOptional()}
+                    |            override val modelType: KClass<$statefulName> = $statefulName::class
+                    |        }
+                    """.trimMargin()
+                )
+
+                if (index < statefulGetters.lastIndex) {
+                    append("\n\n")
+                }
+            }
+        }
+
+    private fun String.toSnakeCase() = buildString {
+        this@toSnakeCase.forEachIndexed { index, char ->
+            if (char.isUpperCase()) {
+                if (index > 0) {
+                    append('_')
+                }
+                append(char)
+            } else {
+                append(char.toUpperCase())
+            }
+        }
+    }
 }
