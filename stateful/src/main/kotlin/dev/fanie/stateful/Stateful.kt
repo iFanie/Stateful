@@ -58,6 +58,13 @@ enum class StatefulOptions {
     NO_DIFFING,
 
     /**
+     * When applied, the listener is allowed to omit a subset of properties when creating [Renders] annotated functions
+     * which will cause a [RendererConfigurationException] with a [RendererConfigurationError.NO_MATCHING_RENDERERS_FOUND]
+     * error to be to be thrown otherwise.
+     */
+    ALLOW_MISSING_RENDERERS,
+
+    /**
      * When applied, separate interfaces, one for each public property of the annotated model, will be generated, all of
      * which are extended by a master interface.
      */
