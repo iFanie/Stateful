@@ -37,17 +37,17 @@ class StatefulCompiler : AbstractProcessor() {
                 val statefulGetters = processingUtils.getGettersOf(stateful)
 
                 val annotation = stateful.getAnnotation(Stateful::class.java)
-                val statefulExtras = annotation.options.toSet()
-                val withListener = statefulExtras.contains(StatefulOptions.WITH_LISTENER) ||
-                        statefulExtras.contains(StatefulOptions.WITH_NON_CASCADING_LISTENER)
+                val statefulOptions = annotation.options.toSet()
+                val withListener = statefulOptions.contains(StatefulOptions.WITH_LISTENER) ||
+                        statefulOptions.contains(StatefulOptions.WITH_NON_CASCADING_LISTENER)
 
                 if (withListener) {
                     val updateListenerBuilder = ListenerBuilder(
                         statefulPackage,
                         statefulClass,
                         statefulGetters,
-                        statefulExtras.contains(StatefulOptions.WITH_NON_CASCADING_LISTENER),
-                        statefulExtras.contains(StatefulOptions.NO_DIFFING)
+                        statefulOptions.contains(StatefulOptions.WITH_NON_CASCADING_LISTENER),
+                        statefulOptions.contains(StatefulOptions.NO_DIFFING)
                     )
                     classGenerator.generate(updateListenerBuilder)
                 }
@@ -58,9 +58,10 @@ class StatefulCompiler : AbstractProcessor() {
                     statefulClass,
                     statefulGetters,
                     statefulType,
-                    statefulExtras.contains(StatefulOptions.NO_LAZY_INIT),
-                    statefulExtras.contains(StatefulOptions.NO_DIFFING),
-                    withListener
+                    statefulOptions.contains(StatefulOptions.NO_LAZY_INIT),
+                    statefulOptions.contains(StatefulOptions.NO_DIFFING),
+                    withListener,
+                    statefulOptions.contains(StatefulOptions.ALLOW_MISSING_RENDERERS)
                 )
                 classGenerator.generate(statefulBuilder)
             }

@@ -3,7 +3,7 @@ package dev.fanie.stateful.util
 import dev.fanie.stateful.AbstractStatefulInstance
 import dev.fanie.stateful.Renders
 import dev.fanie.stateful.StatefulProperty
-import dev.fanie.stateful.invokePropertyRenderers
+import dev.fanie.stateful.buildPropertyRenderers
 import java.util.Objects
 import kotlin.reflect.KClass
 
@@ -12,11 +12,11 @@ data class TestModel(val int: Int = 0, val strings: List<String>? = null)
 internal class TestStateful(private val renderer: Any) : AbstractStatefulInstance<TestModel>() {
     override fun announce(currentInstance: TestModel?, newInstance: TestModel) {
         if (!Objects.equals(currentInstance?.int, newInstance.int)) {
-            invokePropertyRenderers(Property.INT, renderer, currentInstance, newInstance)
+            buildPropertyRenderers(Property.INT, renderer).forEach { it(currentInstance, newInstance) }
         }
 
         if (!Objects.equals(currentInstance?.strings, newInstance.strings)) {
-            invokePropertyRenderers(Property.STRINGS, renderer, currentInstance, newInstance)
+            buildPropertyRenderers(Property.STRINGS, renderer).forEach { it(currentInstance, newInstance) }
         }
     }
 

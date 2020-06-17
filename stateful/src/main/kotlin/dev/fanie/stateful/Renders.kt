@@ -59,7 +59,7 @@ enum class RendererConfigurationError(val messageFormat: String) {
 }
 
 /**
- * Thrown by the [invokePropertyRenderers] when a [Renders] annotated function has been wrongly configured.
+ * Thrown by the [buildPropertyRenderers] when a [Renders] annotated function has been wrongly configured.
  * @property error The error type, of the [RendererConfigurationError] type.
  * @param messageFormatArgs The string format arguments for displaying a readable error message.
  */
@@ -67,22 +67,18 @@ class RendererConfigurationException(val error: RendererConfigurationError, vara
     RuntimeException(error.messageFormat.format(*messageFormatArgs))
 
 /**
- * Invokes a render function for a property update of a given Model instance.
+ * Builds functions that Invoke the appropriate renderers of a given Model instance for a property update.
  * @param Type The type of the property.
  * @param Model The model class and owner of the property.
  * @param property The [StatefulProperty] implementation for the specific property.
  * @param listener The instance containing [Renders] annotated functions to be invoked.
- * @param currentInstance The currently rendered instance of the [Model] type, if any.
- * @param newInstance The instance of the [Model] type to be rendered.
  * @throws [RendererConfigurationException] When renderer function has not been properly set-up. See [Renders] for how to
  *   setup a renderer function properly.
  */
-fun <Type : Any, Model : Any> invokePropertyRenderers(
+fun <Type : Any, Model : Any> buildPropertyRenderers(
     property: StatefulProperty<Type, Model>,
-    listener: Any,
-    currentInstance: Model?,
-    newInstance: Model
-) {
+    listener: Any
+): List<Function2<Model?, Model, Unit>> {
     val renderers = listener::class.functions
         .map { it to it.findAnnotation<Renders>() }
         .filter { it.second?.let { renders -> renders.property.objectInstance != null } ?: false }
@@ -95,18 +91,20 @@ fun <Type : Any, Model : Any> invokePropertyRenderers(
         throw RendererConfigurationException(NO_MATCHING_RENDERERS_FOUND, property, listener)
     }
 
+    val functions = mutableListOf<Function2<Model?, Model, Unit>>()
     matchingRenderers.forEach { (renderer, _) ->
-        invokePropertyRenderer(property, listener, renderer, currentInstance, newInstance)
+        functions.add(
+            buildPropertyRenderer(property, listener, renderer)
+        )
     }
+    return functions.toList()
 }
 
-private fun <Type : Any, Model : Any> invokePropertyRenderer(
+private fun <Type : Any, Model : Any> buildPropertyRenderer(
     property: StatefulProperty<Type, Model>,
     listener: Any,
-    renderer: KFunction<*>,
-    currentInstance: Model?,
-    newInstance: Model
-) {
+    renderer: KFunction<*>
+): Function2<Model?, Model, Unit> {
     val parameters = renderer.parameters
     if (parameters.size < 2 || parameters.size > 3) {
         throw RendererConfigurationException(INVALID_RENDERER_PARAMETERS, renderer)
@@ -133,8 +131,10 @@ private fun <Type : Any, Model : Any> invokePropertyRenderer(
             )
         }
 
-        val value = property.valueOf(firstParameter, newInstance)
-        renderer.call(listener, value)
+        return { _: Model?, newInstance: Model ->
+            val value = property.valueOf(firstParameter, newInstance)
+            renderer.call(listener, value)
+        }
     } else {
         if (!firstParameter.type.isMarkedNullable) {
             throw RendererConfigurationException(NON_OPTIONAL_FIRST_RENDERER_PARAMETER, firstParameter, renderer)
@@ -159,9 +159,11 @@ private fun <Type : Any, Model : Any> invokePropertyRenderer(
             )
         }
 
-        val firstValue = property.valueOf(firstParameter, currentInstance)
-        val secondValue = property.valueOf(secondParameter, newInstance)
-        renderer.call(listener, firstValue, secondValue)
+        return { currentInstance: Model?, newInstance: Model ->
+            val firstValue = property.valueOf(firstParameter, currentInstance)
+            val secondValue = property.valueOf(secondParameter, newInstance)
+            renderer.call(listener, firstValue, secondValue)
+        }
     }
 }
 
