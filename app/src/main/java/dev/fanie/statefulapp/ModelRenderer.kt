@@ -22,4 +22,24 @@ class ModelRenderer : AppCompatActivity(), View<Model> {
     fun renderTitle(title: String) {
         /* Renders the new title */
     }
+
+    @Renders(StatefulModel.Property.TITLE_COLOR::class)
+    fun renderTitleColor(color: Int) {
+        /* Renders the new title color */
+    }
+
+    @Renders(StatefulModel.Property.TITLE_FONT_SIZE::class)
+    fun renderTitleSize(fontSize: Float?) {
+        /* Renders the new title font size */
+    }
+
+    @Renders(StatefulModel.Property.IS_TITLE_VISIBLE::class)
+    fun renderTitleVisibility(isVisible: Boolean) {
+        /* Renders the new title visibility */
+    }
+
+    @Renders(StatefulModel.Property.TITLE_ANIMATES::class)
+    fun renderTitleAnimation(animates: Boolean?) {
+        /* Renders the new title animation */
+    }
 }

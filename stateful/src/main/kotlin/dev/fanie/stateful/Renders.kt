@@ -50,7 +50,7 @@ annotation class Renders(val property: KClass<out StatefulProperty<*, *>>)
  */
 enum class RendererConfigurationError(val messageFormat: String) {
     NO_RENDERERS_FOUND("NO_RENDERERS_FOUND: No functions annotated with @Renders found in `%s`."),
-    NO_MATCHING_RENDERERS_FOUND("NO_MATCHING_RENDERERS_FOUND: No functions annotated with @Renders for `%s` found in `%s`."),
+    NO_MATCHING_RENDERERS_FOUND("NO_MATCHING_RENDERERS_FOUND: No functions annotated with @Renders for `%s` found in `%s`. If you do not need to render every property, consider using the [StatefulOptions.ALLOW_MISSING_RENDERERS] option."),
     INVALID_RENDERER_PARAMETERS("INVALID_RENDERER_PARAMETERS: Function `%s` should contain one of the following combinations of parameters: (newValue), (oldValue?, newValue), (newModel), (oldModel?, newModel)."),
     INVALID_RENDERER_PARAMETER_TYPE("INVALID_RENDERER_PARAMETER_TYPE: Parameter `%s` of function `%s` should either be of `%s` or `%s` type."),
     WRONG_RENDERER_PARAMETER_NULLABILITY("WRONG_RENDERER_PARAMETER_NULLABILITY: Parameter `%s` of function `%s` should be (optional = %s)."),
