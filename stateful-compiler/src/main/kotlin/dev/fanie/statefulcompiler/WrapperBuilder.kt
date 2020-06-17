@@ -18,7 +18,8 @@ class WrapperBuilder(
     statefulType: StatefulType,
     private val noLazyInit: Boolean,
     private val noDiffing: Boolean,
-    private val withListener: Boolean
+    private val withListener: Boolean,
+    private val allowMissingRenderers: Boolean
 ) : ClassBuilder {
     private val statefulName = statefulClass.replace("$statefulPackage.", "").capitalize()
 
@@ -64,9 +65,11 @@ class WrapperBuilder(
             "javax.annotation.Generated"
         ).apply {
             if (!withListener) {
-                add("dev.fanie.stateful.invokePropertyRenderers")
                 add("kotlin.reflect.KClass")
                 add("dev.fanie.stateful.StatefulProperty")
+                add("dev.fanie.stateful.buildPropertyRenderers")
+                add("dev.fanie.stateful.StatefulRendererCache")
+                add("dev.fanie.stateful.statefulRendererCache")
             }
             statefulGetters.forEach { addAll(it.type.imports) }
         }.toSet().sorted()
@@ -88,7 +91,7 @@ class WrapperBuilder(
                         |/**
                         | * Creates a new instance of the [$className] type.
                         | * @param listener The [$listenerType] instance to be invoked upon updates.
-                        | * @param initial$statefulName The initial ${statefulName.decapitalize()} to be provided. Default value is {@code null}.
+                        | * @param initial$statefulName The initial ${statefulName.decapitalize()} to be provided. Default value is null.
                         | * @return A new instance of the [$className] type.
                         | */
                         |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
@@ -107,8 +110,8 @@ class WrapperBuilder(
                         |/**
                         | * Provides a lazy initializer for the [Stateful$statefulName] type.
                         | * @param listener The [$listenerType] instance to be invoked upon updates.
-                        | * @param initial$statefulName The initial ${statefulName.decapitalize()} to be provided. Default value is {@code null}.
-                        | * @param lazyMode The [LazyThreadSafetyMode] for the instance creation. Default value is {@code LazyThreadSafetyMode.SYNCHRONIZED}.
+                        | * @param initial$statefulName The initial ${statefulName.decapitalize()} to be provided. Default value is null.
+                        | * @param lazyMode The [LazyThreadSafetyMode] for the instance creation. Default value is [LazyThreadSafetyMode.SYNCHRONIZED].
                         | * @return A lazy initializer for the [Stateful$statefulName] type.
                         | */
                         |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
@@ -120,8 +123,8 @@ class WrapperBuilder(
                         |
                         |/**
                         | * Provides a lazy initializer for the [Stateful$statefulName] type, invoking the receiving [Stateful${statefulName}Listener] instance.
-                        | * @param initial$statefulName The initial  ${statefulName.decapitalize()}  to be provided. Default value is {@code null}.
-                        | * @param lazyMode The [LazyThreadSafetyMode] for the instance creation. Default value is {@code LazyThreadSafetyMode.SYNCHRONIZED}.
+                        | * @param initial$statefulName The initial  ${statefulName.decapitalize()}  to be provided. Default value is null.
+                        | * @param lazyMode The [LazyThreadSafetyMode] for the instance creation. Default value is [LazyThreadSafetyMode.SYNCHRONIZED].
                         | * @return A lazy initializer for the [Stateful$statefulName] type.
                         | */
                         |@Generated("dev.fanie.statefulcompiler.StatefulCompiler")
@@ -142,7 +145,9 @@ class WrapperBuilder(
                         |    }
             """.trimMargin()
         } else {
-            """override fun announce(currentInstance: $statefulName?, newInstance: $statefulName) {
+            """private val rendererCache by statefulRendererCache<$statefulName, Property<*>>(listener, allowMissingRenderers = $allowMissingRenderers)
+                        |
+                        |    override fun announce(currentInstance: $statefulName?, newInstance: $statefulName) {
                         |        $rendererInvocations
                         |    }
                         |
@@ -165,18 +170,18 @@ class WrapperBuilder(
                 if (!noDiffing) {
                     append(
                         """ |${space}if (!equals(currentInstance?.$name, newInstance.$name)) {
-                        |            ${newValue(name)}
-                        |            ${bothValues(name)}
-                        |            ${newStateful(name)}
-                        |            ${bothStatefuls(name)}
-                        |        }
-                    """.trimMargin()
+                            |            ${newValue(name)}
+                            |            ${bothValues(name)}
+                            |            ${newStateful(name)}
+                            |            ${bothStatefuls(name)}
+                            |        }
+                        """.trimMargin()
                     )
                 } else {
                     append(
                         """
                         |$space${singleValue(name)}
-                    """.trimMargin()
+                        """.trimMargin()
                     )
                 }
 
@@ -213,15 +218,15 @@ class WrapperBuilder(
                 if (!noDiffing) {
                     append(
                         """ |${space}if (!equals(currentInstance?.$name, newInstance.$name)) {
-                        |            invokePropertyRenderers(Property.${name.toSnakeCase()}, listener, currentInstance, newInstance)
+                        |            rendererCache.getRenderers(Property.${name.toSnakeCase()})?.forEach { it(currentInstance, newInstance) }
                         |        }
-                    """.trimMargin()
+                        """.trimMargin()
                     )
                 } else {
                     append(
                         """
-                        |invokePropertyRenderers(Property.${name.toSnakeCase()}, listener, currentInstance, newInstance)
-                    """.trimMargin()
+                        |rendererCache.getRenderers(Property.${name.toSnakeCase()})?.forEach { it(currentInstance, newInstance) }
+                        """.trimMargin()
                     )
                 }
 
